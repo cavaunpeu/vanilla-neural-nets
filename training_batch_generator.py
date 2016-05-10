@@ -2,7 +2,7 @@ from abc import ABCMeta, abstractmethod
 
 import numpy as np
 
-from will.data_object import TrainingBatch
+from data_object import TrainingBatch
 
 
 class BaseTrainingBatchGenerator(metaclass=ABCMeta):
