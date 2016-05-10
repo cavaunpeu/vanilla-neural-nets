@@ -1,9 +1,9 @@
 import numpy as np
 
-from training_batch_generator import MiniBatchGenerator
-from optimization_algorithm import GradientDescent
-from loss_function import MeanSquaredError
-from activation_function import SigmoidActivationFunction
+from neural_network.training_batch_generator import MiniBatchGenerator
+from neural_network.optimization_algorithm import GradientDescent
+from neural_network.loss_function import MeanSquaredError
+from neural_network.activation_function import SigmoidActivationFunction
 
 
 class VanillaNeuralNetwork:

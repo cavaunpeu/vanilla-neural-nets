@@ -8,10 +8,10 @@ from tests.fixtures.vanilla_neural_network_training_data_y import TRAINING_DATA_
 from tests.fixtures.vanilla_neural_network_test_data_X import TEST_DATA_X
 from tests.fixtures.vanilla_neural_network_expected_result import EXPECTED_RESULT
 from neural_network.network import VanillaNeuralNetwork
-from training_batch_generator import MiniBatchGenerator
-from optimization_algorithm import GradientDescent
-from loss_function import MeanSquaredError
-from activation_function import SigmoidActivationFunction
+from neural_network.training_batch_generator import MiniBatchGenerator
+from neural_network.optimization_algorithm import GradientDescent
+from neural_network.loss_function import MeanSquaredError
+from neural_network.activation_function import SigmoidActivationFunction
 
 
 class TestVanillaNeuralNetwork(unittest.TestCase):
