@@ -14,7 +14,7 @@ class BaseOptimizationAlgorithm(metaclass=ABCMeta):
 class GradientDescent:
 
     def __init__(self, training_batch, weight_matrices, bias_vectors, loss_function_class,
-            activation_function_class, learning_rate):
+            activation_function_class, output_layer_activation_function_class, learning_rate):
         self.X = training_batch.X
         self.y = training_batch.y
         self.batch_size = len(self.X)
@@ -22,6 +22,7 @@ class GradientDescent:
         self.bias_vectors = bias_vectors
         self.loss_function_class = loss_function_class
         self.activation_function_class = activation_function_class
+        self.output_layer_activation_function_class = output_layer_activation_function_class
         self.learning_rate = learning_rate
         self.linear_combination_matrices = []
         self.activation_matrices = []
@@ -36,7 +37,10 @@ class GradientDescent:
 
     def _feed_forward(self, X):
         self.activation_matrices.append(X)
-        for weight_matrix, bias_vector in zip(self.weight_matrices, self.bias_vectors):
+        for layer_number, (bias_vector, weight_matrix) in enumerate(zip(self.bias_vectors, self.weight_matrices)):
+            activation_function_class = self.output_layer_activation_function_class if layer_number == len(self.weight_matrices) + 1\
+                else self.activation_function_class
+
             linear_combination = np.dot(self.activation_matrices[-1], weight_matrix.T) + bias_vector
             self.linear_combination_matrices.append(linear_combination)
             activation_matrix = self.activation_function_class.activation_function(linear_combination)

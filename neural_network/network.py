@@ -10,11 +10,13 @@ class VanillaNeuralNetwork:
 
     def __init__(self, layer_sizes, training_batch_generator_class, loss_function_class,
             activation_function_class, optimization_algorithm_class, learning_rate, n_epochs,
-            training_batch_size, holdout_data=None, random_state=123):
+            training_batch_size, output_layer_activation_function_class=None,
+            holdout_data=None, random_state=123):
         self.layer_sizes = layer_sizes
         self.training_batch_generator_class = training_batch_generator_class
         self.loss_function_class = loss_function_class
         self.activation_function_class = activation_function_class
+        self.output_layer_activation_function_class = output_layer_activation_function_class or activation_function_class
         self.optimization_algorithm_class = optimization_algorithm_class
         self.learning_rate = learning_rate
         self.n_epochs = n_epochs
@@ -37,9 +39,12 @@ class VanillaNeuralNetwork:
 
     def predict(self, X):
         activation_matrix = X
-        for bias_vector, weight_matrix in zip(self.bias_vectors, self.weight_matrices):
+        for layer_number, (bias_vector, weight_matrix) in enumerate(zip(self.bias_vectors, self.weight_matrices)):
+            activation_function_class = self.output_layer_activation_function_class if layer_number == len(self.layer_sizes)\
+                else self.activation_function_class
+
             linear_combination = np.dot(activation_matrix, weight_matrix.T) + bias_vector
-            activation_matrix = self.activation_function_class.activation_function(linear_combination)
+            activation_matrix = activation_function_class.activation_function(linear_combination)
         return activation_matrix
 
     def update_mini_batch(self, training_batch):
@@ -49,6 +54,7 @@ class VanillaNeuralNetwork:
             bias_vectors=self.bias_vectors,
             loss_function_class=self.loss_function_class,
             activation_function_class=self.activation_function_class,
+            output_layer_activation_function_class=self.output_layer_activation_function_class,
             learning_rate=self.learning_rate
         ).run()
 

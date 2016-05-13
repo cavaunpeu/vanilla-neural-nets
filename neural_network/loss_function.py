@@ -31,3 +31,14 @@ class MeanSquaredError(BaseLossFunction):
     @classmethod
     def derivative_of_loss_function(cls, y_true, y_predicted):
         return y_predicted - y_true
+
+
+class CrossEntropyLoss(BaseLossFunction):
+
+    @classmethod
+    def cost(cls, y_true, y_predicted):
+        return -( y_true*np.log(y_predicted) + (1 - y_true)*np.log(1 - y_predicted) ).mean()
+
+    @classmethod
+    def derivative_of_loss_function(cls, y_true, y_predicted):
+        return -( (y_true / y_predicted) - ((1 - y_true) / (1 - y_predicted)) )
