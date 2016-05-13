@@ -12,10 +12,10 @@ class VanillaNeuralNetwork:
             activation_function_class, optimization_algorithm_class, learning_rate, n_epochs,
             training_batch_size, holdout_data=None, random_state=123):
         self.layer_sizes = layer_sizes
-        self.training_batch_generator_class = MiniBatchGenerator
-        self.loss_function_class = MeanSquaredError
-        self.activation_function_class = SigmoidActivationFunction
-        self.optimization_algorithm_class = GradientDescent
+        self.training_batch_generator_class = training_batch_generator_class
+        self.loss_function_class = loss_function_class
+        self.activation_function_class = activation_function_class
+        self.optimization_algorithm_class = optimization_algorithm_class
         self.learning_rate = learning_rate
         self.n_epochs = n_epochs
         self.training_batch_size = training_batch_size
