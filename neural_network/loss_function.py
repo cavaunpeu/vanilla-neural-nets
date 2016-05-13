@@ -26,7 +26,7 @@ class MeanSquaredError(BaseLossFunction):
 
     @classmethod
     def cost(cls, y_true, y_predicted):
-        return (.5*(y_true - y_predicted)**2).sum()
+        return (.5*(y_true - y_predicted)**2).mean()
 
     @classmethod
     def derivative_of_loss_function(cls, y_true, y_predicted):
