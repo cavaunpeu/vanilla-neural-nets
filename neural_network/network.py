@@ -4,6 +4,7 @@ from neural_network.training_batch_generator import MiniBatchGenerator
 from neural_network.optimization_algorithm import GradientDescent
 from neural_network.loss_function import MeanSquaredError
 from neural_network.activation_function import SigmoidActivationFunction
+from neural_network.layer_object import NetworkLayersCollection
 
 
 class VanillaNeuralNetwork:
@@ -12,7 +13,6 @@ class VanillaNeuralNetwork:
             activation_function_class, optimization_algorithm_class, learning_rate, n_epochs,
             training_batch_size, output_layer_activation_function_class=None,
             holdout_data=None, random_state=123):
-        self.layer_sizes = layer_sizes
         self.training_batch_generator_class = training_batch_generator_class
         self.loss_function_class = loss_function_class
         self.activation_function_class = activation_function_class
@@ -23,8 +23,8 @@ class VanillaNeuralNetwork:
         self.training_batch_size = training_batch_size
         self.holdout_data = holdout_data
         self.random_number_generator = np.random.RandomState(random_state)
-        self.bias_vectors = self._initialize_bias_vectors()
-        self.weight_matrices = self._initialize_weight_matrices()
+        self.network_layers = NetworkLayersCollection(layer_sizes=layer_sizes,
+            random_number_generator=self.random_number_generator)
 
     def fit(self, X, y):
         for epoch in range(self.n_epochs):
@@ -39,19 +39,18 @@ class VanillaNeuralNetwork:
 
     def predict(self, X):
         activation_matrix = X
-        for layer_number, (bias_vector, weight_matrix) in enumerate(zip(self.bias_vectors, self.weight_matrices)):
-            activation_function_class = self.output_layer_activation_function_class if layer_number == len(self.layer_sizes)\
+        for layer in self.network_layers:
+            activation_function_class = self.output_layer_activation_function_class if layer.output_layer\
                 else self.activation_function_class
 
-            linear_combination = np.dot(activation_matrix, weight_matrix.T) + bias_vector
+            linear_combination = np.dot(activation_matrix, layer.weight_matrix.T) + layer.bias_vector
             activation_matrix = activation_function_class.activation_function(linear_combination)
         return activation_matrix
 
     def update_mini_batch(self, training_batch):
-        self.weight_matrices, self.bias_vectors = self.optimization_algorithm_class(
+        self.network_layers = self.optimization_algorithm_class(
             training_batch=training_batch,
-            weight_matrices=self.weight_matrices,
-            bias_vectors=self.bias_vectors,
+            network_layers=self.network_layers,
             loss_function_class=self.loss_function_class,
             activation_function_class=self.activation_function_class,
             output_layer_activation_function_class=self.output_layer_activation_function_class,
@@ -64,10 +63,3 @@ class VanillaNeuralNetwork:
             y_true=self.holdout_data.y,
             y_predicted=holdout_predictions
         )
-
-    def _initialize_weight_matrices(self):
-        return [self.random_number_generator.randn(next_layer_size, layer_size) for layer_size, next_layer_size \
-            in zip(self.layer_sizes[:-1], self.layer_sizes[1:])]
-
-    def _initialize_bias_vectors(self):
-        return [self.random_number_generator.randn(layer_size) for layer_size in self.layer_sizes[1:]]
