@@ -32,7 +32,7 @@ class VanillaNeuralNetwork:
                 random_number_generator=self.random_number_generator)
 
             for training_batch in training_batch_generator:
-                self._update_mini_batch(training_batch)
+                self._update_network_layers_with_training_batch(training_batch)
             if self.holdout_data:
                 holdout_accuracy = self._validate_on_holdout_set()
                 print('Epoch: {} | Accuracy: {}'.format(epoch, np.round(holdout_accuracy, 5)))
@@ -47,7 +47,7 @@ class VanillaNeuralNetwork:
             activation_matrix = activation_function_class.activation_function(linear_combination)
         return activation_matrix
 
-    def _update_mini_batch(self, training_batch):
+    def _update_network_layers_with_training_batch(self, training_batch):
         self.network_layers = self.optimization_algorithm_class(
             training_batch=training_batch,
             network_layers=self.network_layers,
