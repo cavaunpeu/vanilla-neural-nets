@@ -39,9 +39,10 @@ class NetworkLayersCollection:
         self._weight_matrices = updated_weight_matrices
 
     def __iter__(self):
-        for layer_number, (weight_matrix, bias_vector) in enumerate(zip(self.weight_matrices, self.bias_vectors)):
+        for layer_index, (weight_matrix, bias_vector) in enumerate(zip(self.weight_matrices, self.bias_vectors)):
+            is_output_layer = layer_index + 1 == len(self.weight_matrices)
             yield NetworkLayer(
                 weight_matrix=weight_matrix, 
                 bias_vector=bias_vector,
-                output_layer=layer_number == len(self.layer_sizes)
+                output_layer=is_output_layer
             )

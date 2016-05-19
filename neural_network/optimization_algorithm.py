@@ -42,7 +42,7 @@ class GradientDescent:
 
             linear_combination = np.dot(self.activation_matrices[-1], layer.weight_matrix.T) + layer.bias_vector
             self.linear_combination_matrices.append(linear_combination)
-            activation_matrix = self.activation_function_class.activation_function(linear_combination)
+            activation_matrix = activation_function_class.activation_function(linear_combination)
             self.activation_matrices.append(activation_matrix)
 
     def _compute_delta_matrices(self):
