@@ -56,7 +56,7 @@ class GradientDescent:
 
     def _compute_output_layer_delta_matrix(self):
         return self.loss_function_class.derivative_of_loss_function(y_true=self.y, y_predicted=self.activation_matrices[-1]) * \
-            self.activation_function_class.derivative_of_activation_function(self.linear_combination_matrices[-1])
+            self.output_layer_activation_function_class.derivative_of_activation_function(self.linear_combination_matrices[-1])
 
     def _compute_weight_gradient_matrices(self):
         weight_gradient_matrices = deque()
