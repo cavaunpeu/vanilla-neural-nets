@@ -9,18 +9,22 @@ class NetworkLayer:
 
 class NetworkLayersCollection:
 
-    def __init__(self, layer_sizes, random_number_generator):
+    def __init__(self, layer_sizes, random_number_generator, weight_initialization_standard_deviation):
         self.layer_sizes = layer_sizes
-        self.random_number_generator = random_number_generator
+        self._random_number_generator = random_number_generator
+        self._weight_initialization_standard_deviation = weight_initialization_standard_deviation or 1.
         self._bias_vectors = self._initialize_bias_vectors()
         self._weight_matrices = self._initialize_weight_matrices()
 
     def _initialize_weight_matrices(self):
-        return [self.random_number_generator.randn(next_layer_size, layer_size) for layer_size, next_layer_size \
+        return [self._draw_gaussian_samples(size=(next_layer_size, layer_size)) for layer_size, next_layer_size \
             in zip(self.layer_sizes[:-1], self.layer_sizes[1:])]
 
     def _initialize_bias_vectors(self):
-        return [self.random_number_generator.randn(layer_size) for layer_size in self.layer_sizes[1:]]
+        return [self._draw_gaussian_samples(size=layer_size) for layer_size in self.layer_sizes[1:]]
+
+    def _draw_gaussian_samples(self, size):
+        return self._random_number_generator.normal(loc=0.0, scale=self._weight_initialization_standard_deviation, size=size)
 
     @property
     def bias_vectors(self):

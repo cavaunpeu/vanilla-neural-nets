@@ -38,25 +38,13 @@ class SoftmaxActivationFunction(BaseActivationFunction):
 
     @classmethod
     def derivative_of_activation_function(cls, linear_combination):
-        reshaped_linear_combination = np.expand_dims(linear_combination, axis=cls.ARRAY_AXIS_TO_EXPAND)
-        n_training_instances = reshaped_linear_combination.shape[0]
-        n_output_neurons = reshaped_linear_combination.shape[-1]
-
-        return np.apply_along_axis(cls._derivative_of_softmax_function, axis=-1, arr=reshaped_linear_combination)\
-            .reshape(n_training_instances, n_output_neurons, n_output_neurons)
-
-    @classmethod
-    def _derivative_of_softmax_function(cls, linear_combination):
-        reshaped_linear_combination = np.expand_dims(linear_combination, axis=cls.ARRAY_AXIS_TO_EXPAND)
-        diagonal_jacobian_entries = linear_combination * (1 - linear_combination)
-
-        jacobian = reshaped_linear_combination.T.dot(reshaped_linear_combination)
-        np.fill_diagonal(a=jacobian, val=diagonal_jacobian_entries)
-        return jacobian.ravel()
+        activations = cls.activation_function(linear_combination)
+        return activations * (1 - activations)
 
     @staticmethod
     def _softmax_function(linear_combination):
-        exponentiated_terms = np.exp(linear_combination)
+        normalized_linear_combination = linear_combination - linear_combination.max()
+        exponentiated_terms = np.exp(normalized_linear_combination)
         return exponentiated_terms / exponentiated_terms.sum()
 
 
@@ -68,9 +56,7 @@ class ReLUActivationFunction(BaseActivationFunction):
 
     @classmethod
     def derivative_of_activation_function(cls, linear_combination):
-        return np.vectorize(
-            lambda linear_combination: 1 if linear_combination > 0 else 0
-        )(linear_combination)
+        return linear_combination > 0
 
 
 class LinearActivationFunction(BaseActivationFunction):

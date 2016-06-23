@@ -12,7 +12,7 @@ class VanillaNeuralNetwork:
     def __init__(self, layer_sizes, training_batch_generator_class, loss_function_class,
             activation_function_class, optimization_algorithm_class, learning_rate, n_epochs,
             training_batch_size, output_layer_activation_function_class=None,
-            holdout_data=None, random_state=123):
+            weight_initialization_standard_deviation=None, holdout_data=None, random_state=123):
         self.training_batch_generator_class = training_batch_generator_class
         self.loss_function_class = loss_function_class
         self.activation_function_class = activation_function_class
@@ -24,7 +24,8 @@ class VanillaNeuralNetwork:
         self.holdout_data = holdout_data
         self.random_number_generator = np.random.RandomState(random_state)
         self.network_layers = NetworkLayersCollection(layer_sizes=layer_sizes,
-            random_number_generator=self.random_number_generator)
+            random_number_generator=self.random_number_generator,
+            weight_initialization_standard_deviation=weight_initialization_standard_deviation)
 
     def fit(self, X, y):
         for epoch in range(self.n_epochs):
@@ -32,7 +33,7 @@ class VanillaNeuralNetwork:
                 random_number_generator=self.random_number_generator)
 
             for training_batch in training_batch_generator:
-                self.network_layers = self._update_network_layers_with_training_batch(training_batch)
+                self.network_layers = self._update_network_layers_with_training_batch(training_batch)                    
             if self.holdout_data:
                 holdout_accuracy = self._validate_on_holdout_set()
                 print('Epoch: {} | Accuracy: {}'.format(epoch, np.round(holdout_accuracy, 5)))
@@ -58,7 +59,7 @@ class VanillaNeuralNetwork:
         ).run()
 
     def _validate_on_holdout_set(self):
-        holdout_predictions = self.predict(self.holdout_data.X)
+        holdout_predictions = self.predict(self.holdout_data.X)        
         return self.loss_function_class.accuracy(
             y_true=self.holdout_data.y,
             y_predicted=holdout_predictions
