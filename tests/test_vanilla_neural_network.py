@@ -13,6 +13,7 @@ from neural_network.training_batch_generator import MiniBatchGenerator
 from neural_network.optimization_algorithm import GradientDescent
 from neural_network.loss_function import MeanSquaredError
 from neural_network.activation_function import SigmoidActivationFunction
+from neural_network.parameter_initialization import GaussianWeightInitializer, GaussianBiasInitializer
 
 
 class TestVanillaNeuralNetwork(unittest.TestCase):
@@ -22,6 +23,7 @@ class TestVanillaNeuralNetwork(unittest.TestCase):
     LEARNING_RATE = 3.
     LAYER_SIZES = [784, 30, 10]
     RANDOM_STATE = 123
+    GAUSSIAN_INITIALIZATER_STANDARD_DEVIATION = 1.
 
     def test_network_with_mean_squared_loss_gives_correct_output(self):
         network = VanillaNeuralNetwork(
@@ -34,6 +36,14 @@ class TestVanillaNeuralNetwork(unittest.TestCase):
             n_epochs=self.N_EPOCHS,
             training_batch_size=self.TRAINING_BATCH_SIZE,
             random_state=self.RANDOM_STATE,
+            weight_initializer=GaussianWeightInitializer(
+                self.GAUSSIAN_INITIALIZATER_STANDARD_DEVIATION,
+                random_state=self.RANDOM_STATE
+            ),
+            bias_initializer=GaussianBiasInitializer(
+                self.GAUSSIAN_INITIALIZATER_STANDARD_DEVIATION,
+                random_state=self.RANDOM_STATE
+            )
         )
 
         network.fit(X=TRAINING_DATA_X, y=TRAINING_DATA_Y)
@@ -53,6 +63,14 @@ class TestVanillaNeuralNetwork(unittest.TestCase):
             n_epochs=self.N_EPOCHS,
             training_batch_size=self.TRAINING_BATCH_SIZE,
             random_state=self.RANDOM_STATE,
+            weight_initializer=GaussianWeightInitializer(
+                self.GAUSSIAN_INITIALIZATER_STANDARD_DEVIATION,
+                random_state=self.RANDOM_STATE
+            ),
+            bias_initializer=GaussianBiasInitializer(
+                self.GAUSSIAN_INITIALIZATER_STANDARD_DEVIATION,
+                random_state=self.RANDOM_STATE
+            )
         )
 
         network.fit(X=TRAINING_DATA_X, y=TRAINING_DATA_Y)

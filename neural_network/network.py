@@ -11,8 +11,8 @@ class VanillaNeuralNetwork:
 
     def __init__(self, layer_sizes, training_batch_generator_class, loss_function_class,
             activation_function_class, optimization_algorithm_class, learning_rate, n_epochs,
-            training_batch_size, output_layer_activation_function_class=None,
-            holdout_data=None, random_state=123):
+            training_batch_size, weight_initializer, bias_initializer,
+            output_layer_activation_function_class=None, holdout_data=None, random_state=123):
         self.training_batch_generator_class = training_batch_generator_class
         self.loss_function_class = loss_function_class
         self.activation_function_class = activation_function_class
@@ -23,8 +23,11 @@ class VanillaNeuralNetwork:
         self.training_batch_size = training_batch_size
         self.holdout_data = holdout_data
         self.random_number_generator = np.random.RandomState(random_state)
-        self.network_layers = NetworkLayersCollection(layer_sizes=layer_sizes,
-            random_number_generator=self.random_number_generator)
+        self.network_layers = NetworkLayersCollection(
+            layer_sizes=layer_sizes,
+            weight_initializer=weight_initializer,
+            bias_initializer=bias_initializer
+        )
 
     def fit(self, X, y):
         for epoch in range(self.n_epochs):
