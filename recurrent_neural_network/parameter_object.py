@@ -9,7 +9,7 @@ class NetworkWeightParameter:
             first_dimension=first_dimension,
             second_dimension=second_dimension
         )
-        self.gradient = np.zeros_like(self.value) + .01 # remove this!
+        self.gradient = np.zeros_like(self.value) # remove this!
 
 
 class NetworkParametersCollection:

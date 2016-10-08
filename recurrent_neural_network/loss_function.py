@@ -9,14 +9,13 @@ class CrossEntropyLoss(BaseLossFunction):
 
     @classmethod
     def loss(cls, y_true, y_predicted):
-        N = len( list( itertools.chain( *y_true ) ) )
-        total_loss = 0
-        for prediction_matrix, labels in zip(y_predicted, y_true):
-            row_indices = np.arange( len(labels) )
-            column_indices = labels
-            total_loss += np.sum([ -np.log(prediction_matrix[row_indices, column_indices]) ])            
+        return cls.total_loss(y_true=y_true, y_predicted=y_predicted) / len(y_true)
 
-        return total_loss / N
+    @classmethod
+    def total_loss(cls, y_true, y_predicted):
+        row_indices = np.arange( len(y_true) )
+        column_indices = y_true
+        return np.sum([ -np.log(y_predicted[row_indices, column_indices]) ])
 
     @classmethod
     def derivative_of_loss_function(cls, y_true, y_predicted):

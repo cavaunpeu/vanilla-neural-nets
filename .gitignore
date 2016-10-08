@@ -2,3 +2,4 @@ mldata
 .ipynb_checkpoints
 **/__pycache__/*
 notebooks
+.DS_Store

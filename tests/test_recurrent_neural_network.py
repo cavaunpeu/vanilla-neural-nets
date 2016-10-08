@@ -8,8 +8,8 @@ from tests.helpers.gradient_check import RNNGradientChecker
 
 class TestVanillaRecurrentNeuralNetwork(unittest.TestCase):
 
-    X_TRAIN = [[0, 1, 2, 3]]
-    Y_TRAIN = [[1, 2, 3, 4]]
+    X_TRAIN = [0, 1, 2, 3]
+    Y_TRAIN = [1, 2, 3, 4]
     VOCABULARY_SIZE = 10
     
     HIDDEN_LAYER_SIZE = 3
@@ -29,7 +29,7 @@ class TestVanillaRecurrentNeuralNetwork(unittest.TestCase):
             n_epochs=self.N_EPOCHS,
             random_state=self.RANDOM_STATE
         )
-        rnn_gradient_checker = RNNGradientChecker(network=network, x=self.X_TRAIN, y=self.Y_TRAIN)
+        rnn_gradient_checker = RNNGradientChecker(network=network, X=self.X_TRAIN, y=self.Y_TRAIN)
         
         rnn_gradient_checker.run()
 
