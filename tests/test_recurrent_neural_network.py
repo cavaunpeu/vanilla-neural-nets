@@ -11,7 +11,7 @@ class TestVanillaRecurrentNeuralNetwork(unittest.TestCase):
     X_TRAIN = [0, 1, 2, 3]
     Y_TRAIN = [1, 2, 3, 4]
     VOCABULARY_SIZE = 10
-    
+
     HIDDEN_LAYER_SIZE = 3
     BACKPROP_THROUGH_TIME_STEPS = SOME_LARGE_NUMBER = 1000
     LEARNING_RATE = .005
@@ -29,8 +29,8 @@ class TestVanillaRecurrentNeuralNetwork(unittest.TestCase):
             n_epochs=self.N_EPOCHS,
             random_state=self.RANDOM_STATE
         )
-        rnn_gradient_checker = RNNGradientChecker(network=network, X=self.X_TRAIN, y=self.Y_TRAIN)
-        
+        rnn_gradient_checker = RNNGradientChecker(network=network, x=self.X_TRAIN, y=self.Y_TRAIN)
+
         rnn_gradient_checker.run()
 
         self.assertTrue(rnn_gradient_checker.passed)

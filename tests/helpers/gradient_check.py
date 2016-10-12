@@ -6,9 +6,9 @@ import numpy as np
 
 class RNNGradientChecker:
 
-    def __init__(self, network, X, y, epsilon=.001, error_threshold=.01):
+    def __init__(self, network, x, y, epsilon=.001, error_threshold=.01):
         self.network = network
-        self.X = X
+        self.x = x
         self.y = y
         self.epsilon = epsilon
         self.error_threshold = error_threshold
@@ -20,7 +20,7 @@ class RNNGradientChecker:
         self._passed = False
 
     def run(self):
-        self.network.compute_gradients(x=self.X, y=self.y)
+        self.network.compute_gradients(x=self.x, y=self.y)
         for parameter in self.network_parameters:
             if not self._passes_gradient_check(parameter=parameter):
                 return
@@ -73,7 +73,7 @@ class RNNGradientChecker:
 
     def _compute_total_loss_given_parameter_value(self, parameter, value):
         with patch.object(parameter, attribute='value', new=value):
-            y_predicted = self.network.predict(x=self.X)
+            y_predicted = self.network.predict(x=self.x)
             return self.network.loss_function_class.total_loss(y_true=self.y, y_predicted=y_predicted)
 
     def _compute_relative_error(self, numerical_gradient, analytical_gradient):

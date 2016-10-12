@@ -8,12 +8,10 @@ from recurrent_neural_network.parameter_object import NetworkParametersCollectio
 
 class VanillaRecurrentNeuralNetwork:
 
-    # you should pass in a _feed_forward function from inside of your network to the optimization routine, so you don't repeat yourself.
-
     def __init__(self, vocabulary_size, hidden_layer_size, backprop_through_time_steps,
         optimization_algorithm_class, weight_initializer_class, learning_rate, n_epochs,
         random_state, loss_function_class=CrossEntropyLoss):
-        self.backprop_through_time_steps = backprop_through_time_steps
+        self.backprop_through_time_steps=backprop_through_time_steps
         self.optimization_algorithm_class = optimization_algorithm_class
         self.loss_function_class = loss_function_class
         self.learning_rate = learning_rate
@@ -31,51 +29,15 @@ class VanillaRecurrentNeuralNetwork:
         )
 
     def compute_gradients(self, x, y):
-        softmax_outputs, hidden_state = self._feed_forward(x)
-        time_steps = np.arange(len(x))
-
-        # compute gradients
-        dJdW_hy = np.zeros_like(self.parameters.W_hy.gradient)
-        dJdW_hh = np.zeros_like(self.parameters.W_hh.gradient)
-        dJdW_xh = np.zeros_like(self.parameters.W_xh.gradient)
-
-        for t in time_steps[::-1]:
-            label = y[t]
-
-            # derivative of loss function w.r.t. softmax predictions
-            dJdP = softmax_outputs[t]
-            dJdP[label] -= 1
-
-            # derivative of loss function w.r.t. W_hy
-            dJdW_hy += np.outer(dJdP, hidden_state[t])
-
-            # derivative of loss function w.r.t. hidden state
-            dJdH = dJdP @ self.parameters.W_hy.value
-
-            # initialize dJdH_parent
-            dJdH_parent = dJdH
-
-            # back-propagate through time
-            back_prop_through_time_steps = np.arange( max(0, t-self.backprop_through_time_steps), t+1)
-            for t_ in back_prop_through_time_steps[::-1]:
-
-                # derivative of loss function w.r.t. hidden-layer input
-                dJdZ = dJdH_parent * (1 - hidden_state[t_]**2)
-
-                # derivative of loss function w.r.t. W_hh
-                dJdW_hh += np.outer(dJdZ, hidden_state[t_-1])
-
-                # derivative of loss function w.r.t. W_xh
-                input_vector = np.arange(self.vocabulary_size) == x[t_]
-                dJdW_xh += np.outer(dJdZ, input_vector)
-
-                # derivative of loss function w.r.t. *previous* hidden state
-                dJdH_parent = dJdZ @ self.parameters.W_hh.value
-
-        # update gradients
-        self.parameters.W_hy.gradient = dJdW_hy
-        self.parameters.W_hh.gradient = dJdW_hh
-        self.parameters.W_xh.gradient = dJdW_xh
+        return self.optimization_algorithm_class(
+                    x=x,
+                    y=y,
+                    feed_forward_method=self._feed_forward,
+                    learning_rate=self.learning_rate,
+                    backprop_through_time_steps=self.backprop_through_time_steps,
+                    vocabulary_size=self.vocabulary_size,
+                    parameters=self.parameters
+            ).compute_gradients()
 
     def predict(self, x):
         softmax_outputs, hidden_state = self._feed_forward(x)
@@ -94,6 +56,8 @@ class VanillaRecurrentNeuralNetwork:
             softmax_outputs.append(
                 self._compute_softmax( self.parameters.W_hy.value @ hidden_state[-1] )
             )
+        # move initial hidden state to end of deque, such that it is later our
+        # `hidden_state[t-1]` at t=0
         hidden_state.rotate(-1)
 
         return np.array(softmax_outputs), np.array(hidden_state)

@@ -9,7 +9,10 @@ class NetworkWeightParameter:
             first_dimension=first_dimension,
             second_dimension=second_dimension
         )
-        self.gradient = np.zeros_like(self.value) # remove this!
+        self.reset_gradient_to_zero()
+
+    def reset_gradient_to_zero(self):
+        self.gradient = np.zeros_like(self.value)
 
 
 class NetworkParametersCollection:
@@ -33,3 +36,8 @@ class NetworkParametersCollection:
             second_dimension=hidden_layer_size,
             weight_initializer=weight_initializer
         )
+
+    def reset_gradients_to_zero(self):
+        self.W_xh.reset_gradient_to_zero()
+        self.W_hh.reset_gradient_to_zero()
+        self.W_hy.reset_gradient_to_zero()
