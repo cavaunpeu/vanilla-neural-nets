@@ -28,6 +28,19 @@ class VanillaRecurrentNeuralNetwork:
             weight_initializer=weight_initializer
         )
 
+    def fit(self, X, y):
+        for epoch in range(self.n_epochs):
+            for sentence, labels in zip(X, y):
+                self.parameters = self.optimization_algorithm_class(
+                    x=sentence,
+                    y=labels,
+                    feed_forward_method=self._feed_forward,
+                    learning_rate=self.learning_rate,
+                    backprop_through_time_steps=self.backprop_through_time_steps,
+                    vocabulary_size=self.vocabulary_size,
+                    parameters=self.parameters
+                ).run()
+
     def compute_gradients(self, x, y):
         return self.optimization_algorithm_class(
                     x=x,

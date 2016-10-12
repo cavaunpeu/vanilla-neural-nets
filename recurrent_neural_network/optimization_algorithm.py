@@ -13,6 +13,11 @@ class RNNGradientDescent:
             self.vocabulary_size=vocabulary_size
             self.parameters=parameters
 
+    def run(self):
+        self.parameters = self.compute_gradients()
+        self._update_weights()
+        return self.parameters
+
     def compute_gradients(self):
         return BackPropagateThroughTime(
             feed_forward_method=self.feed_forward_method,
@@ -20,3 +25,8 @@ class RNNGradientDescent:
             vocabulary_size=self.vocabulary_size,
             parameters=self.parameters
         ).compute_gradients(x=self.x, y=self.y)
+
+    def _update_weights(self):
+        self.parameters.W_xh.value -= self.learning_rate * self.parameters.W_xh.gradient
+        self.parameters.W_hh.value -= self.learning_rate * self.parameters.W_hh.gradient
+        self.parameters.W_hy.value -= self.learning_rate * self.parameters.W_hy.gradient
