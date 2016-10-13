@@ -47,6 +47,18 @@ class TestVanillaRecurrentNeuralNetwork(unittest.TestCase):
        [  1.89559120e-01,   4.65433020e-02,   2.99233326e-01]
     ])
 
+    X_TEST = [1, 3, 5, 7]
+    EXPECTED_PREDICTIONS = np.array([
+       [ 0.1039706 ,  0.08861039,  0.10075295,  0.09302079,  0.11139207,
+         0.09293745,  0.11113309,  0.09800194,  0.09708666,  0.10309406],
+       [ 0.09527139,  0.10748862,  0.10210434,  0.1034768 ,  0.09393808,
+         0.10469148,  0.09229414,  0.10253984,  0.10470121,  0.0934941 ],
+       [ 0.10145951,  0.09353862,  0.09854082,  0.09708348,  0.10557278,
+         0.09650587,  0.10600911,  0.09848255,  0.09830849,  0.10449877],
+       [ 0.10707651,  0.09506989,  0.09672738,  0.09742555,  0.10369424,
+         0.09579618,  0.1070661 ,  0.09653   ,  0.09285929,  0.10775486]
+    ])
+
     def test_network_passes_gradient_check(self):
         network = VanillaRecurrentNeuralNetwork(
             vocabulary_size=self.VOCABULARY_SIZE,
@@ -114,3 +126,20 @@ class TestVanillaRecurrentNeuralNetwork(unittest.TestCase):
 
         assert_array_almost_equal(network.parameters.W_hy.value,
             self.EXPECTED_W_HY_VALUE_AFTER_GRADIENT_DESCENT_STEP, decimal=8)
+
+    def test_network_makes_correct_predictions(self):
+        network = VanillaRecurrentNeuralNetwork(
+            vocabulary_size=self.VOCABULARY_SIZE,
+            hidden_layer_size=self.HIDDEN_LAYER_SIZE,
+            backprop_through_time_steps=self.BACKPROP_THROUGH_TIME_STEPS,
+            optimization_algorithm_class=RNNGradientDescent,
+            weight_initializer_class=OneOverRootNWeightInitializer,
+            learning_rate=self.LEARNING_RATE,
+            n_epochs=self.N_EPOCHS,
+            random_state=self.RANDOM_STATE
+        )
+
+        network.fit(X=[self.X_TRAIN], y=[self.Y_TRAIN])
+        predictions = network.predict(self.X_TEST)
+
+        assert_array_almost_equal(predictions, self.EXPECTED_PREDICTIONS, decimal=8)
