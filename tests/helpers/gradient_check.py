@@ -3,6 +3,8 @@ import sys
 
 import numpy as np
 
+from recurrent_neural_network.optimization_algorithm import RNNGradientDescent
+
 
 class RNNGradientChecker:
 
@@ -19,8 +21,9 @@ class RNNGradientChecker:
         ]
         self._passed = False
 
-    def run(self):
-        self.network.compute_gradients(x=self.x, y=self.y)
+    @patch.object(RNNGradientDescent, '_update_weights')
+    def run(self, mock_update_weights):
+        self.network.fit(X=[self.x], y=[self.y])
         for parameter in self.network_parameters:
             if not self._passes_gradient_check(parameter=parameter):
                 return

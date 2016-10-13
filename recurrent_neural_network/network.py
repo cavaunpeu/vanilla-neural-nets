@@ -41,17 +41,6 @@ class VanillaRecurrentNeuralNetwork:
                     parameters=self.parameters
                 ).run()
 
-    def compute_gradients(self, x, y):
-        return self.optimization_algorithm_class(
-                    x=x,
-                    y=y,
-                    feed_forward_method=self._feed_forward,
-                    learning_rate=self.learning_rate,
-                    backprop_through_time_steps=self.backprop_through_time_steps,
-                    vocabulary_size=self.vocabulary_size,
-                    parameters=self.parameters
-            ).compute_gradients()
-
     def predict(self, x):
         softmax_outputs, hidden_state = self._feed_forward(x)
         return softmax_outputs

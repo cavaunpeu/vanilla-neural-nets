@@ -14,12 +14,12 @@ class RNNGradientDescent:
             self.parameters=parameters
 
     def run(self):
-        self.parameters = self.compute_gradients()
+        self._compute_gradients()
         self._update_weights()
         return self.parameters
 
-    def compute_gradients(self):
-        return BackPropagateThroughTime(
+    def _compute_gradients(self):
+        self.parameters = BackPropagateThroughTime(
             feed_forward_method=self.feed_forward_method,
             backprop_through_time_steps=self.backprop_through_time_steps,
             vocabulary_size=self.vocabulary_size,
