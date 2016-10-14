@@ -1,14 +1,6 @@
-from abc import ABCMeta, abstractmethod
 from collections import deque
 
 import numpy as np
-
-
-class BaseOptimizationAlgorithm(metaclass=ABCMeta):
-
-    @abstractmethod
-    def run(self):
-        pass
 
 
 class GradientDescent:
