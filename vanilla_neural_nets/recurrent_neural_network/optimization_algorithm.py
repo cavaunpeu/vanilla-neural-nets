@@ -1,4 +1,4 @@
-from recurrent_neural_network.backpropagate_through_time import _BackPropagateThroughTime
+from vanilla_neural_nets.recurrent_neural_network.backpropagate_through_time import _BackPropagateThroughTime
 
 
 class RNNGradientDescent:

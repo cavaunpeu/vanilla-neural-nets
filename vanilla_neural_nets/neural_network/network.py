@@ -1,10 +1,10 @@
 import numpy as np
 
-from neural_network.training_batch_generator import MiniBatchGenerator
-from neural_network.optimization_algorithm import GradientDescent
-from neural_network.loss_function import MeanSquaredError
-from neural_network.activation_function import SigmoidActivationFunction
-from neural_network.layer_object import NetworkLayersCollection
+from vanilla_neural_nets.neural_network.training_batch_generator import MiniBatchGenerator
+from vanilla_neural_nets.neural_network.optimization_algorithm import GradientDescent
+from vanilla_neural_nets.neural_network.loss_function import MeanSquaredError
+from vanilla_neural_nets.neural_network.activation_function import SigmoidActivationFunction
+from vanilla_neural_nets.neural_network.layer_object import NetworkLayersCollection
 
 
 class VanillaNeuralNetwork:

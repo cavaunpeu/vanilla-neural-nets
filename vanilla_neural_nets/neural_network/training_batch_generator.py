@@ -1,5 +1,5 @@
 from base.training_batch_generator import BaseTrainingBatchGenerator
-from neural_network.data_object import _TrainingBatch
+from vanilla_neural_nets.neural_network.data_object import _TrainingBatch
 
 
 class MiniBatchGenerator(BaseTrainingBatchGenerator):
