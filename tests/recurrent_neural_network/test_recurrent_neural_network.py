@@ -3,9 +3,9 @@ import unittest
 import numpy as np
 from numpy.testing import assert_array_almost_equal
 
-from recurrent_neural_network.network import VanillaRecurrentNeuralNetwork
-from recurrent_neural_network.optimization_algorithm import RNNGradientDescent
-from recurrent_neural_network.parameter_initialization import OneOverRootNWeightInitializer
+from vanilla_neural_nets.recurrent_neural_network.network import VanillaRecurrentNeuralNetwork
+from vanilla_neural_nets.recurrent_neural_network.optimization_algorithm import RNNGradientDescent
+from vanilla_neural_nets.recurrent_neural_network.parameter_initialization import OneOverRootNWeightInitializer
 from tests.helpers.gradient_check import RNNGradientChecker
 
 

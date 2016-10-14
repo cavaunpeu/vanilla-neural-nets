@@ -1,9 +1,9 @@
 import unittest
 
 from base.loss_function import BaseLossFunction
-from neural_network.loss_function import MeanSquaredError
-from neural_network.loss_function import CrossEntropyLoss
-from recurrent_neural_network.loss_function import CrossEntropyLoss as RNNCrossEntropyLoss
+from vanilla_neural_nets.neural_network.loss_function import MeanSquaredError
+from vanilla_neural_nets.neural_network.loss_function import CrossEntropyLoss
+from vanilla_neural_nets.recurrent_neural_network.loss_function import CrossEntropyLoss as RNNCrossEntropyLoss
 
 
 class TestLossFunctions(unittest.TestCase):

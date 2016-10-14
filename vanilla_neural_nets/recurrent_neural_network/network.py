@@ -2,8 +2,8 @@ from collections import deque
 
 import numpy as np
 
-from recurrent_neural_network.loss_function import CrossEntropyLoss
-from recurrent_neural_network.parameter_object import NetworkParametersCollection
+from vanilla_neural_nets.recurrent_neural_network.loss_function import CrossEntropyLoss
+from vanilla_neural_nets.recurrent_neural_network.parameter_object import NetworkParametersCollection
 
 
 class VanillaRecurrentNeuralNetwork:
