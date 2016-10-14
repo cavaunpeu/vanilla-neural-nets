@@ -7,7 +7,7 @@ from base.loss_function import BaseLossFunction
 class MeanSquaredError(BaseLossFunction):
 
     @classmethod
-    def cost(cls, y_true, y_predicted):
+    def loss(cls, y_true, y_predicted):
         return (.5*(y_true - y_predicted)**2).mean()
 
     @classmethod
@@ -18,7 +18,7 @@ class MeanSquaredError(BaseLossFunction):
 class CrossEntropyLoss(BaseLossFunction):
 
     @classmethod
-    def cost(cls, y_true, y_predicted):
+    def loss(cls, y_true, y_predicted):
         return -( y_true*np.log(y_predicted) + (1 - y_true)*np.log(1 - y_predicted) ).mean()
 
     @classmethod

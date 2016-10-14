@@ -13,7 +13,7 @@ class BaseLossFunction(metaclass=ABCMeta):
 
     @classmethod
     @abstractmethod
-    def cost(cls):
+    def loss(cls):
         pass
 
     @classmethod
