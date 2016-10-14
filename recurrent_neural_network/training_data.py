@@ -14,7 +14,7 @@ class WordLevelRNNTrainingDataBuilder:
         tokenized_corpus = cls._tokenize_corpus_into_list_of_tokenized_sentences(corpus)
         tokenized_corpus = cls._remove_uncommon_words(tokenized_corpus, vocabulary_size)
         tokenized_corpus = cls._append_sentence_start_and_end_tokens(tokenized_corpus)
-        return RNNTrainingData(tokenized_corpus=tokenized_corpus)
+        return _RNNTrainingData(tokenized_corpus=tokenized_corpus)
 
     @classmethod
     def _tokenize_corpus_into_list_of_tokenized_sentences(cls, corpus):
@@ -46,7 +46,7 @@ class WordLevelRNNTrainingDataBuilder:
         return [['SENTENCE_START'] + sentence + ['SENTENCE_END'] for sentence in tokenized_corpus]
 
 
-class RNNTrainingData:
+class _RNNTrainingData:
 
     def __init__(self, tokenized_corpus):
         self.training_data_as_tokens = tokenized_corpus
