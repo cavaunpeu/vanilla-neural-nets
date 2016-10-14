@@ -40,6 +40,8 @@ class VanillaRecurrentNeuralNetwork:
                     vocabulary_size=self.vocabulary_size,
                     parameters=self.parameters
                 ).run()
+            training_loss = self._compute_training_loss(x=sentence, y_true=labels)
+            print('Epoch: {} | Loss: {}'.format(epoch, np.round(training_loss, 5)))
 
     def predict(self, x):
         softmax_outputs, hidden_state = self._feed_forward(x)
@@ -67,3 +69,7 @@ class VanillaRecurrentNeuralNetwork:
     def _compute_softmax(self, vector):
         exponentiated_terms = np.exp(vector)
         return exponentiated_terms / exponentiated_terms.sum()
+
+    def _compute_training_loss(self, x, y_true):
+        softmax_outputs, hidden_state = self._feed_forward(x)
+        return self.loss_function_class.total_loss(y_true=y_true, y_predicted=softmax_outputs)
