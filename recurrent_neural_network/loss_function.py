@@ -2,7 +2,7 @@ import itertools
 
 import numpy as np
 
-from neural_network.loss_function import BaseLossFunction
+from base.loss_function import BaseLossFunction
 
 
 class CrossEntropyLoss(BaseLossFunction):
