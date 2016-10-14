@@ -1,6 +1,6 @@
 import unittest
 
-from recurrent_neural_network.training_data import WordLevelRNNTrainingDataBuilder, RNNTrainingData
+from recurrent_neural_network.training_data import WordLevelRNNTrainingDataBuilder
 
 
 class TestRecurrentNeuralNetworkTrainingData(unittest.TestCase):

@@ -38,6 +38,7 @@ class WordLevelRNNTrainingDataBuilder:
 
     @staticmethod
     def _clean_sentence(sentence):
+        sentence = ' '.join(sentence.split())
         return sentence.lower()
 
     @staticmethod
@@ -50,6 +51,7 @@ class RNNTrainingData:
     def __init__(self, tokenized_corpus):
         self.training_data_as_tokens = tokenized_corpus
         self.token_to_index_lookup = self._compose_token_to_index_lookup(tokenized_corpus)
+        self.index_to_token_lookup = self._compose_index_to_token_lookup()
         self.training_data_as_indices = self._indexify_tokenized_corpus()
         self.X_train = self._compose_X_train()
         self.y_train = self._compose_y_train()
@@ -63,6 +65,9 @@ class RNNTrainingData:
 
     def _compose_y_train(self):
         return [training_instance[1:] for training_instance in self.training_data_as_indices]
+
+    def _compose_index_to_token_lookup(self):
+        return {index: token for token, index in self.token_to_index_lookup.items()}
 
     @staticmethod
     def _compose_token_to_index_lookup(tokenized_corpus):
