@@ -1,5 +1,5 @@
 
-class TrainingBatch:
+class _TrainingBatch:
 
     def __init__(self, X, y):
         self.X = X

@@ -2,7 +2,7 @@ from abc import ABCMeta, abstractmethod
 
 import numpy as np
 
-from neural_network.data_object import TrainingBatch
+from neural_network.data_object import _TrainingBatch
 
 
 class BaseTrainingBatchGenerator(metaclass=ABCMeta):
@@ -23,7 +23,7 @@ class MiniBatchGenerator(BaseTrainingBatchGenerator):
 
     def __iter__(self):
         for start_index in self.batch_starting_indices:
-            yield TrainingBatch(
+            yield _TrainingBatch(
                 X=self.X[start_index : start_index + self.batch_size],
                 y=self.y[start_index : start_index + self.batch_size]
             )

@@ -1,7 +1,7 @@
 import numpy as np
 
 
-class BackPropagateThroughTime:
+class _BackPropagateThroughTime:
 
     def __init__(self, feed_forward_method, backprop_through_time_steps, vocabulary_size, parameters):
         self.feed_forward_method = feed_forward_method

@@ -1,4 +1,4 @@
-from recurrent_neural_network.backpropagate_through_time import BackPropagateThroughTime
+from recurrent_neural_network.backpropagate_through_time import _BackPropagateThroughTime
 
 
 class RNNGradientDescent:
@@ -19,7 +19,7 @@ class RNNGradientDescent:
         return self.parameters
 
     def _compute_gradients(self):
-        self.parameters = BackPropagateThroughTime(
+        self.parameters = _BackPropagateThroughTime(
             feed_forward_method=self.feed_forward_method,
             backprop_through_time_steps=self.backprop_through_time_steps,
             vocabulary_size=self.vocabulary_size,
