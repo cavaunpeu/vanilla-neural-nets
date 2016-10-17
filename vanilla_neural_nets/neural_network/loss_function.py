@@ -15,7 +15,7 @@ class MeanSquaredError(BaseLossFunction):
         return y_predicted - y_true
 
 
-class CrossEntropyLoss(BaseLossFunction):
+class BinaryCrossEntropyLoss(BaseLossFunction):
 
     @classmethod
     def loss(cls, y_true, y_predicted):
