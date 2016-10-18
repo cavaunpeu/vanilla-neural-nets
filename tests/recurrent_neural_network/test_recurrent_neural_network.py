@@ -5,6 +5,7 @@ from numpy.testing import assert_array_almost_equal
 
 from vanilla_neural_nets.recurrent_neural_network.network import VanillaRecurrentNeuralNetwork
 from vanilla_neural_nets.recurrent_neural_network.optimization_algorithm import RNNGradientDescent
+from vanilla_neural_nets.recurrent_neural_network.backpropagate_through_time import RNNBackPropagateThroughTime
 from vanilla_neural_nets.recurrent_neural_network.parameter_initialization import OneOverRootNWeightInitializer
 from tests.helpers.gradient_check import RNNGradientChecker
 
@@ -63,6 +64,7 @@ class TestVanillaRecurrentNeuralNetwork(unittest.TestCase):
         network = VanillaRecurrentNeuralNetwork(
             vocabulary_size=self.VOCABULARY_SIZE,
             hidden_layer_size=self.HIDDEN_LAYER_SIZE,
+            backprop_through_time_class=RNNBackPropagateThroughTime,
             backprop_through_time_steps=self.BACKPROP_THROUGH_TIME_STEPS,
             optimization_algorithm_class=RNNGradientDescent,
             weight_initializer_class=OneOverRootNWeightInitializer,
@@ -80,6 +82,7 @@ class TestVanillaRecurrentNeuralNetwork(unittest.TestCase):
         network = VanillaRecurrentNeuralNetwork(
             vocabulary_size=self.VOCABULARY_SIZE,
             hidden_layer_size=self.HIDDEN_LAYER_SIZE,
+            backprop_through_time_class=RNNBackPropagateThroughTime,
             backprop_through_time_steps=self.BACKPROP_THROUGH_TIME_STEPS,
             optimization_algorithm_class=RNNGradientDescent,
             weight_initializer_class=OneOverRootNWeightInitializer,
@@ -97,6 +100,7 @@ class TestVanillaRecurrentNeuralNetwork(unittest.TestCase):
         network = VanillaRecurrentNeuralNetwork(
             vocabulary_size=self.VOCABULARY_SIZE,
             hidden_layer_size=self.HIDDEN_LAYER_SIZE,
+            backprop_through_time_class=RNNBackPropagateThroughTime,
             backprop_through_time_steps=self.BACKPROP_THROUGH_TIME_STEPS,
             optimization_algorithm_class=RNNGradientDescent,
             weight_initializer_class=OneOverRootNWeightInitializer,
@@ -114,6 +118,7 @@ class TestVanillaRecurrentNeuralNetwork(unittest.TestCase):
         network = VanillaRecurrentNeuralNetwork(
             vocabulary_size=self.VOCABULARY_SIZE,
             hidden_layer_size=self.HIDDEN_LAYER_SIZE,
+            backprop_through_time_class=RNNBackPropagateThroughTime,
             backprop_through_time_steps=self.BACKPROP_THROUGH_TIME_STEPS,
             optimization_algorithm_class=RNNGradientDescent,
             weight_initializer_class=OneOverRootNWeightInitializer,
@@ -131,6 +136,7 @@ class TestVanillaRecurrentNeuralNetwork(unittest.TestCase):
         network = VanillaRecurrentNeuralNetwork(
             vocabulary_size=self.VOCABULARY_SIZE,
             hidden_layer_size=self.HIDDEN_LAYER_SIZE,
+            backprop_through_time_class=RNNBackPropagateThroughTime,
             backprop_through_time_steps=self.BACKPROP_THROUGH_TIME_STEPS,
             optimization_algorithm_class=RNNGradientDescent,
             weight_initializer_class=OneOverRootNWeightInitializer,

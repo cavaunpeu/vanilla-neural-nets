@@ -8,10 +8,11 @@ from vanilla_neural_nets.recurrent_neural_network.parameter_object import Networ
 
 class BaseRecurrentNeuralNetwork(metaclass=ABCMeta):
 
-    def __init__(self, vocabulary_size, hidden_layer_size, backprop_through_time_steps,
-        optimization_algorithm_class, weight_initializer_class, learning_rate, n_epochs,
-        random_state, loss_function_class=CrossEntropyLoss, log_training_loss=False):
-        self.backprop_through_time_steps=backprop_through_time_steps
+    def __init__(self, vocabulary_size, hidden_layer_size, backprop_through_time_class,
+        backprop_through_time_steps, optimization_algorithm_class, weight_initializer_class,
+        learning_rate, n_epochs, random_state, loss_function_class=CrossEntropyLoss, log_training_loss=False):
+        self.backprop_through_time_class = backprop_through_time_class
+        self.backprop_through_time_steps = backprop_through_time_steps
         self.optimization_algorithm_class = optimization_algorithm_class
         self.loss_function_class = loss_function_class
         self.learning_rate = learning_rate
@@ -36,6 +37,7 @@ class BaseRecurrentNeuralNetwork(metaclass=ABCMeta):
                     x=sentence,
                     y=labels,
                     feed_forward_method=self._feed_forward,
+                    backprop_through_time_class=self.backprop_through_time_class,
                     learning_rate=self.learning_rate,
                     backprop_through_time_steps=self.backprop_through_time_steps,
                     vocabulary_size=self.vocabulary_size,
