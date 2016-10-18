@@ -120,10 +120,10 @@ class LSTMNetworkParametersCollection:
             weight_initializer=weight_initializer
         )
         self.b_f = _NetworkBiasParameter(name='b_f', size=hidden_layer_size)
-        self.b_i = _NetworkBiasParameter(name='b_f', size=hidden_layer_size)
-        self.b_o = _NetworkBiasParameter(name='b_f', size=hidden_layer_size)
-        self.b_c = _NetworkBiasParameter(name='b_f', size=hidden_layer_size)
-        self.b_y = _NetworkBiasParameter(name='b_f', size=vocabulary_size)
+        self.b_i = _NetworkBiasParameter(name='b_i', size=hidden_layer_size)
+        self.b_o = _NetworkBiasParameter(name='b_o', size=hidden_layer_size)
+        self.b_c = _NetworkBiasParameter(name='b_c', size=hidden_layer_size)
+        self.b_y = _NetworkBiasParameter(name='b_y', size=vocabulary_size)
 
     def reset_gradients_to_zero(self):
         self.W_fh.reset_gradient_to_zero()

@@ -62,17 +62,21 @@ class VanillaLSTM(BaseRecurrentNeuralNetwork):
                                   + self.parameters.W_cx.value[:, x[t]] \
                                   + self.parameters.b_c.value)
             c_t = f_t * cache['memory_cell'][-1] + i_t * candidate_c_t
-            h_t = o_t * np.tanh(c_t)
-            p_t = self._compute_softmax( self.parameters.W_hy.value @ hidden_state[-1] + self.parameters.b_y.value )
 
+            hidden_state.append( o_t * np.tanh(c_t) )
+            softmax_outputs.append(
+                self._compute_softmax( self.parameters.W_hy.value @ hidden_state[-1] + self.parameters.b_y.value )
+            )
             cache['forget_gate'].append(f_t)
             cache['input_gate'].append(i_t)
             cache['output_gate'].append(o_t)
+            cache['candidate_memory_cell'].append(candidate_c_t)
             cache['memory_cell'].append(c_t)
-            hidden_state.append(h_t)
-            softmax_outputs.append(p_t)
 
+        # move initial hidden state and memory cell to end of deque, such that they are later our
+        # `hidden_state[t-1]` and `cache['memory_cell']`, respectively, at t=0
         hidden_state.rotate(-1)
+        cache['memory_cell'].rotate(-1)
 
         return np.array(softmax_outputs), np.array(hidden_state), cache
 
@@ -86,10 +90,11 @@ class VanillaLSTM(BaseRecurrentNeuralNetwork):
     def _create_empty_network_cache(self):
         initial_memory_cell = np.zeros(self.hidden_layer_size)
         return {
-            'memory_cell': deque([initial_memory_cell]),
             'forget_gate': deque(),
             'input_gate': deque(),
-            'output_gate': deque()
+            'output_gate': deque(),
+            'candidate_memory_cell': deque(),
+            'memory_cell': deque([initial_memory_cell])
         }
 
     @staticmethod
