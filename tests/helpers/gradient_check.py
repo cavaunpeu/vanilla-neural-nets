@@ -14,17 +14,12 @@ class RNNGradientChecker:
         self.y = y
         self.epsilon = epsilon
         self.error_threshold = error_threshold
-        self.network_parameters = [
-            self.network.parameters.W_xh,
-            self.network.parameters.W_hh,
-            self.network.parameters.W_hy
-        ]
         self._passed = False
 
     @patch.object(RNNGradientDescent, '_update_weights')
     def run(self, mock_update_weights):
         self.network.fit(X=[self.x], y=[self.y])
-        for parameter in self.network_parameters:
+        for parameter in self.network.parameters:
             if not self._passes_gradient_check(parameter=parameter):
                 return
         self.passed = True
@@ -49,7 +44,7 @@ class RNNGradientChecker:
                 numerical_gradient=numerical_gradient,
                 analytical_gradient=analytical_gradient
             )
-            if relative_error > self.error_threshold:
+            if (relative_error > self.error_threshold) or np.isnan(relative_error):
                 return False
 
             iterator.iternext()

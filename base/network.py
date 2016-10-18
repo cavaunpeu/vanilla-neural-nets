@@ -3,7 +3,6 @@ from abc import ABCMeta, abstractmethod
 import numpy as np
 
 from vanilla_neural_nets.recurrent_neural_network.loss_function import CrossEntropyLoss
-from vanilla_neural_nets.recurrent_neural_network.parameter_object import NetworkParametersCollection
 
 
 class BaseRecurrentNeuralNetwork(metaclass=ABCMeta):
@@ -20,15 +19,11 @@ class BaseRecurrentNeuralNetwork(metaclass=ABCMeta):
         self.hidden_layer_size = hidden_layer_size
         self.vocabulary_size = vocabulary_size
         self.log_training_loss = log_training_loss
-        weight_initializer = weight_initializer_class(
+        self.weight_initializer = weight_initializer_class(
             vocabulary_size=vocabulary_size,
             random_state=random_state
         )
-        self.parameters = NetworkParametersCollection(
-            vocabulary_size=vocabulary_size,
-            hidden_layer_size=hidden_layer_size,
-            weight_initializer=weight_initializer
-        )
+        self.parameters = self._initialize_parameters()
 
     def fit(self, X, y):
         for epoch in range(self.n_epochs):
@@ -53,6 +48,10 @@ class BaseRecurrentNeuralNetwork(metaclass=ABCMeta):
 
     @abstractmethod
     def _feed_forward(self, x):
+        pass
+
+    @abstractmethod
+    def _initialize_parameters(self):
         pass
 
     def _compute_softmax(self, vector):

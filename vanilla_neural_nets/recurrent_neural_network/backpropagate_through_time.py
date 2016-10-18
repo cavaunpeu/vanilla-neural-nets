@@ -44,3 +44,9 @@ class RNNBackPropagateThroughTime(BaseBackPropagateThroughTime):
                 dJdH_parent = dJdZ @ self.parameters.W_hh.value
 
         return self.parameters
+
+
+class LSTMBackpropagateThroughTime(BaseBackPropagateThroughTime):
+
+    def compute_gradients(self, x, y):
+        return self.parameters
