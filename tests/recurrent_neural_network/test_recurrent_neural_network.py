@@ -4,7 +4,7 @@ import numpy as np
 from numpy.testing import assert_array_almost_equal
 
 from vanilla_neural_nets.recurrent_neural_network.network import VanillaRecurrentNeuralNetwork, VanillaLSTM
-from vanilla_neural_nets.recurrent_neural_network.optimization_algorithm import RNNGradientDescent
+from vanilla_neural_nets.recurrent_neural_network.optimization_algorithm import RNNGradientDescent, LSTMGradientDescent
 from vanilla_neural_nets.recurrent_neural_network.backpropagate_through_time import RNNBackPropagateThroughTime, LSTMBackpropagateThroughTime
 from vanilla_neural_nets.recurrent_neural_network.parameter_initialization import OneOverRootNWeightInitializer
 from tests.helpers.gradient_check import RNNGradientChecker
@@ -168,7 +168,7 @@ class TestLSTM(unittest.TestCase):
             hidden_layer_size=self.HIDDEN_LAYER_SIZE,
             backprop_through_time_class=LSTMBackpropagateThroughTime,
             backprop_through_time_steps=self.BACKPROP_THROUGH_TIME_STEPS,
-            optimization_algorithm_class=RNNGradientDescent,
+            optimization_algorithm_class=LSTMGradientDescent,
             weight_initializer_class=OneOverRootNWeightInitializer,
             learning_rate=self.LEARNING_RATE,
             n_epochs=self.N_EPOCHS,

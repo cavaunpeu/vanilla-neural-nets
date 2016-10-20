@@ -3,7 +3,7 @@ import sys
 
 import numpy as np
 
-from vanilla_neural_nets.recurrent_neural_network.optimization_algorithm import RNNGradientDescent
+from base.optimization_algorithm import BaseRNNGradientDescent
 
 
 class RNNGradientChecker:
@@ -16,13 +16,13 @@ class RNNGradientChecker:
         self.error_threshold = error_threshold
         self._passed = False
 
-    @patch.object(RNNGradientDescent, '_update_weights')
-    def run(self, mock_update_weights):
-        self.network.fit(X=[self.x], y=[self.y])
-        for parameter in self.network.parameters:
-            if not self._passes_gradient_check(parameter=parameter):
-                return
-        self.passed = True
+    def run(self):
+        with patch.object(self.network.optimization_algorithm_class, attribute='_update_weights'):
+            self.network.fit(X=[self.x], y=[self.y])
+            for parameter in self.network.parameters:
+                if not self._passes_gradient_check(parameter=parameter):
+                    return
+            self.passed = True
 
     @property
     def passed(self):
