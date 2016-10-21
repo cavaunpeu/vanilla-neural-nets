@@ -3,8 +3,9 @@ import unittest
 import numpy as np
 from numpy.testing import assert_array_almost_equal
 
-from vanilla_neural_nets.recurrent_neural_network.network import VanillaRecurrentNeuralNetwork
-from vanilla_neural_nets.recurrent_neural_network.optimization_algorithm import RNNGradientDescent
+from vanilla_neural_nets.recurrent_neural_network.network import VanillaRecurrentNeuralNetwork, VanillaLSTM
+from vanilla_neural_nets.recurrent_neural_network.optimization_algorithm import RNNGradientDescent, LSTMGradientDescent
+from vanilla_neural_nets.recurrent_neural_network.backpropagate_through_time import RNNBackPropagateThroughTime, LSTMBackpropagateThroughTime
 from vanilla_neural_nets.recurrent_neural_network.parameter_initialization import OneOverRootNWeightInitializer
 from tests.helpers.gradient_check import RNNGradientChecker
 
@@ -63,6 +64,7 @@ class TestVanillaRecurrentNeuralNetwork(unittest.TestCase):
         network = VanillaRecurrentNeuralNetwork(
             vocabulary_size=self.VOCABULARY_SIZE,
             hidden_layer_size=self.HIDDEN_LAYER_SIZE,
+            backprop_through_time_class=RNNBackPropagateThroughTime,
             backprop_through_time_steps=self.BACKPROP_THROUGH_TIME_STEPS,
             optimization_algorithm_class=RNNGradientDescent,
             weight_initializer_class=OneOverRootNWeightInitializer,
@@ -80,6 +82,7 @@ class TestVanillaRecurrentNeuralNetwork(unittest.TestCase):
         network = VanillaRecurrentNeuralNetwork(
             vocabulary_size=self.VOCABULARY_SIZE,
             hidden_layer_size=self.HIDDEN_LAYER_SIZE,
+            backprop_through_time_class=RNNBackPropagateThroughTime,
             backprop_through_time_steps=self.BACKPROP_THROUGH_TIME_STEPS,
             optimization_algorithm_class=RNNGradientDescent,
             weight_initializer_class=OneOverRootNWeightInitializer,
@@ -97,6 +100,7 @@ class TestVanillaRecurrentNeuralNetwork(unittest.TestCase):
         network = VanillaRecurrentNeuralNetwork(
             vocabulary_size=self.VOCABULARY_SIZE,
             hidden_layer_size=self.HIDDEN_LAYER_SIZE,
+            backprop_through_time_class=RNNBackPropagateThroughTime,
             backprop_through_time_steps=self.BACKPROP_THROUGH_TIME_STEPS,
             optimization_algorithm_class=RNNGradientDescent,
             weight_initializer_class=OneOverRootNWeightInitializer,
@@ -114,6 +118,7 @@ class TestVanillaRecurrentNeuralNetwork(unittest.TestCase):
         network = VanillaRecurrentNeuralNetwork(
             vocabulary_size=self.VOCABULARY_SIZE,
             hidden_layer_size=self.HIDDEN_LAYER_SIZE,
+            backprop_through_time_class=RNNBackPropagateThroughTime,
             backprop_through_time_steps=self.BACKPROP_THROUGH_TIME_STEPS,
             optimization_algorithm_class=RNNGradientDescent,
             weight_initializer_class=OneOverRootNWeightInitializer,
@@ -131,6 +136,7 @@ class TestVanillaRecurrentNeuralNetwork(unittest.TestCase):
         network = VanillaRecurrentNeuralNetwork(
             vocabulary_size=self.VOCABULARY_SIZE,
             hidden_layer_size=self.HIDDEN_LAYER_SIZE,
+            backprop_through_time_class=RNNBackPropagateThroughTime,
             backprop_through_time_steps=self.BACKPROP_THROUGH_TIME_STEPS,
             optimization_algorithm_class=RNNGradientDescent,
             weight_initializer_class=OneOverRootNWeightInitializer,
@@ -143,3 +149,33 @@ class TestVanillaRecurrentNeuralNetwork(unittest.TestCase):
         predictions = network.predict(self.X_TEST)
 
         assert_array_almost_equal(predictions, self.EXPECTED_PREDICTIONS, decimal=8)
+
+
+class TestLSTM(unittest.TestCase):
+
+    X_TRAIN = [0, 1, 2, 3]
+    Y_TRAIN = [1, 2, 3, 4]
+    VOCABULARY_SIZE = 10
+    HIDDEN_LAYER_SIZE = 3
+    BACKPROP_THROUGH_TIME_STEPS = SOME_LARGE_NUMBER = 1000
+    LEARNING_RATE = .005
+    N_EPOCHS = 1
+    RANDOM_STATE = 12345
+
+    def test_network_passes_gradient_check(self):
+        network = VanillaLSTM(
+            vocabulary_size=self.VOCABULARY_SIZE,
+            hidden_layer_size=self.HIDDEN_LAYER_SIZE,
+            backprop_through_time_class=LSTMBackpropagateThroughTime,
+            backprop_through_time_steps=self.BACKPROP_THROUGH_TIME_STEPS,
+            optimization_algorithm_class=LSTMGradientDescent,
+            weight_initializer_class=OneOverRootNWeightInitializer,
+            learning_rate=self.LEARNING_RATE,
+            n_epochs=self.N_EPOCHS,
+            random_state=self.RANDOM_STATE
+        )
+        rnn_gradient_checker = RNNGradientChecker(network=network, x=self.X_TRAIN, y=self.Y_TRAIN)
+
+        rnn_gradient_checker.run()
+
+        self.assertTrue(rnn_gradient_checker.passed)

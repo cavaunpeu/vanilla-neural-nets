@@ -2,52 +2,11 @@ from collections import deque
 
 import numpy as np
 
-from vanilla_neural_nets.recurrent_neural_network.loss_function import CrossEntropyLoss
-from vanilla_neural_nets.recurrent_neural_network.parameter_object import NetworkParametersCollection
+from base.network import BaseRecurrentNeuralNetwork
+from vanilla_neural_nets.recurrent_neural_network.parameter_object import RNNNetworkParametersCollection, LSTMNetworkParametersCollection
 
 
-class VanillaRecurrentNeuralNetwork:
-
-    def __init__(self, vocabulary_size, hidden_layer_size, backprop_through_time_steps,
-        optimization_algorithm_class, weight_initializer_class, learning_rate, n_epochs,
-        random_state, loss_function_class=CrossEntropyLoss, log_training_loss=False):
-        self.backprop_through_time_steps=backprop_through_time_steps
-        self.optimization_algorithm_class = optimization_algorithm_class
-        self.loss_function_class = loss_function_class
-        self.learning_rate = learning_rate
-        self.n_epochs = n_epochs
-        self.hidden_layer_size = hidden_layer_size
-        self.vocabulary_size = vocabulary_size
-        self.log_training_loss = log_training_loss
-        weight_initializer = weight_initializer_class(
-            vocabulary_size=vocabulary_size,
-            random_state=random_state
-        )
-        self.parameters = NetworkParametersCollection(
-            vocabulary_size=vocabulary_size,
-            hidden_layer_size=hidden_layer_size,
-            weight_initializer=weight_initializer
-        )
-
-    def fit(self, X, y):
-        for epoch in range(self.n_epochs):
-            for sentence, labels in zip(X, y):
-                self.parameters = self.optimization_algorithm_class(
-                    x=sentence,
-                    y=labels,
-                    feed_forward_method=self._feed_forward,
-                    learning_rate=self.learning_rate,
-                    backprop_through_time_steps=self.backprop_through_time_steps,
-                    vocabulary_size=self.vocabulary_size,
-                    parameters=self.parameters
-                ).run()
-            if self.log_training_loss:
-                training_loss = self._compute_training_loss(x=sentence, y_true=labels)
-                print('Epoch: {} | Loss: {}'.format(epoch, np.round(training_loss, 5)))
-
-    def predict(self, x):
-        softmax_outputs, hidden_state = self._feed_forward(x)
-        return softmax_outputs
+class VanillaRecurrentNeuralNetwork(BaseRecurrentNeuralNetwork):
 
     def _feed_forward(self, x):
         time_steps = len(x)
@@ -68,10 +27,76 @@ class VanillaRecurrentNeuralNetwork:
 
         return np.array(softmax_outputs), np.array(hidden_state)
 
-    def _compute_softmax(self, vector):
-        exponentiated_terms = np.exp(vector)
-        return exponentiated_terms / exponentiated_terms.sum()
+    def _initialize_parameters(self):
+        return RNNNetworkParametersCollection(
+            vocabulary_size=self.vocabulary_size,
+            hidden_layer_size=self.hidden_layer_size,
+            weight_initializer=self.weight_initializer
+        )
 
-    def _compute_training_loss(self, x, y_true):
-        softmax_outputs, hidden_state = self._feed_forward(x)
-        return self.loss_function_class.total_loss(y_true=y_true, y_predicted=softmax_outputs)
+
+class VanillaLSTM(BaseRecurrentNeuralNetwork):
+
+    def predict(self, x):
+        softmax_outputs, hidden_state, cache = self._feed_forward(x)
+        return softmax_outputs
+
+    def _feed_forward(self, x):
+        time_steps = len(x)
+        initial_hidden_state = np.zeros(self.hidden_layer_size)
+        hidden_state = deque([initial_hidden_state])
+        softmax_outputs = deque()
+        cache = self._create_empty_network_cache()
+
+        for t in np.arange(time_steps):
+            f_t = self._sigmoid(z=  self.parameters.W_fh.value @ hidden_state[-1] \
+                                  + self.parameters.W_fx.value[:, x[t]] \
+                                  + self.parameters.b_f.value)
+            i_t = self._sigmoid(z=  self.parameters.W_ih.value @ hidden_state[-1] \
+                                  + self.parameters.W_ix.value[:, x[t]] \
+                                  + self.parameters.b_i.value)
+            o_t = self._sigmoid(z=  self.parameters.W_oh.value @ hidden_state[-1] \
+                                  + self.parameters.W_ox.value[:, x[t]] \
+                                  + self.parameters.b_o.value)
+            candidate_c_t = np.tanh(self.parameters.W_ch.value @ hidden_state[-1] \
+                                  + self.parameters.W_cx.value[:, x[t]] \
+                                  + self.parameters.b_c.value)
+            c_t = f_t * cache['memory_cell'][-1] + i_t * candidate_c_t
+
+            hidden_state.append( o_t * np.tanh(c_t) )
+            softmax_outputs.append(
+                self._compute_softmax( self.parameters.W_hy.value @ hidden_state[-1] + self.parameters.b_y.value )
+            )
+            cache['forget_gate'].append(f_t)
+            cache['input_gate'].append(i_t)
+            cache['output_gate'].append(o_t)
+            cache['candidate_memory_cell'].append(candidate_c_t)
+            cache['memory_cell'].append(c_t)
+
+        # move initial hidden state and memory cell to end of deque, such that they are later our
+        # `hidden_state[t-1]` and `cache['memory_cell']`, respectively, at t=0
+        hidden_state.rotate(-1)
+        cache['memory_cell'].rotate(-1)
+
+        return np.array(softmax_outputs), np.array(hidden_state), cache
+
+    def _initialize_parameters(self):
+        return LSTMNetworkParametersCollection(
+            vocabulary_size=self.vocabulary_size,
+            hidden_layer_size=self.hidden_layer_size,
+            weight_initializer=self.weight_initializer
+        )
+
+    def _create_empty_network_cache(self):
+        initial_memory_cell = np.zeros(self.hidden_layer_size)
+        return {
+            'forget_gate': deque(),
+            'input_gate': deque(),
+            'output_gate': deque(),
+            'candidate_memory_cell': deque(),
+            'memory_cell': deque([initial_memory_cell])
+        }
+
+    @staticmethod
+    def _sigmoid(z):
+        return 1 / (1 + np.exp(-z))
