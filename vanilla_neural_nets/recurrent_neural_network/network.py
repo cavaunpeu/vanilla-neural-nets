@@ -41,6 +41,10 @@ class VanillaLSTM(BaseRecurrentNeuralNetwork):
         softmax_outputs, hidden_state, cache = self._feed_forward(x)
         return softmax_outputs
 
+    def _compute_training_loss(self, x, y_true):
+        softmax_outputs, hidden_state, cache = self._feed_forward(x)
+        return self.loss_function_class.total_loss(y_true=y_true, y_predicted=softmax_outputs)
+
     def _feed_forward(self, x):
         time_steps = len(x)
         initial_hidden_state = np.zeros(self.hidden_layer_size)
