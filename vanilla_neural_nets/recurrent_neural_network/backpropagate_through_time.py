@@ -1,6 +1,6 @@
 import numpy as np
 
-from base.backpropagation import BaseBackPropagateThroughTime
+from vanilla_neural_nets.base.backpropagation import BaseBackPropagateThroughTime
 
 
 class RNNBackPropagateThroughTime(BaseBackPropagateThroughTime):

@@ -1,4 +1,4 @@
-from base.training_batch_generator import BaseTrainingBatchGenerator
+from vanilla_neural_nets.base.training_batch_generator import BaseTrainingBatchGenerator
 from vanilla_neural_nets.neural_network.data_object import _TrainingBatch
 
 

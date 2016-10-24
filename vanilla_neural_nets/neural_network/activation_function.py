@@ -1,6 +1,6 @@
 import numpy as np
 
-from base.activation_function import BaseActivationFunction
+from vanilla_neural_nets.base.activation_function import BaseActivationFunction
 
 
 class SigmoidActivationFunction(BaseActivationFunction):
