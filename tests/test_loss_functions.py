@@ -1,6 +1,6 @@
 import unittest
 
-from base.loss_function import BaseLossFunction
+from vanilla_neural_nets.base.loss_function import BaseLossFunction
 from vanilla_neural_nets.neural_network.loss_function import MeanSquaredError
 from vanilla_neural_nets.neural_network.loss_function import BinaryCrossEntropyLoss
 from vanilla_neural_nets.recurrent_neural_network.loss_function import CrossEntropyLoss

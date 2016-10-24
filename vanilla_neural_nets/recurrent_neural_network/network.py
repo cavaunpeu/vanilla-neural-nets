@@ -2,7 +2,7 @@ from collections import deque
 
 import numpy as np
 
-from base.network import BaseRecurrentNeuralNetwork
+from vanilla_neural_nets.base.network import BaseRecurrentNeuralNetwork
 from vanilla_neural_nets.recurrent_neural_network.parameter_object import RNNNetworkParametersCollection, LSTMNetworkParametersCollection
 
 

@@ -1,6 +1,6 @@
 import numpy as np
 
-from base.parameter_initialization import BaseParameterInitializer
+from vanilla_neural_nets.base.parameter_initialization import BaseParameterInitializer
 
 
 class OneOverRootNWeightInitializer(BaseParameterInitializer):

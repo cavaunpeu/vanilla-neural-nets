@@ -3,7 +3,7 @@ import sys
 
 import numpy as np
 
-from base.optimization_algorithm import BaseRNNGradientDescent
+from vanilla_neural_nets.base.optimization_algorithm import BaseRNNGradientDescent
 
 
 class RNNGradientChecker:

@@ -1,7 +1,7 @@
 import numpy as np
 
 
-from base.loss_function import BaseLossFunction
+from vanilla_neural_nets.base.loss_function import BaseLossFunction
 
 
 class MeanSquaredError(BaseLossFunction):
