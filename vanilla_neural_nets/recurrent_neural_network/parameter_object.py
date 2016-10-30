@@ -1,29 +1,15 @@
 import numpy as np
 
 
-class _NetworkWeightParameter:
-
-    def __init__(self, name, first_dimension, second_dimension, weight_initializer):
-        self.name = name
-        self.value = weight_initializer.initialize(
-            first_dimension=first_dimension,
-            second_dimension=second_dimension
-        )
-        self.reset_gradient_to_zero()
-
-    def reset_gradient_to_zero(self):
-        self.gradient = np.zeros_like(self.value)
+from vanilla_neural_nets.base.parameter_object import _NetworkWeightParameter, _NetworkBiasParameter
 
 
-class _NetworkBiasParameter:
+class _RNNNetworkBiasParameter(_NetworkBiasParameter):
 
     def __init__(self, name, size):
         self.name = name
         self.value = np.zeros(size)
         self.reset_gradient_to_zero()
-
-    def reset_gradient_to_zero(self):
-        self.gradient = np.zeros_like(self.value)
 
 
 class RNNNetworkParametersCollection:
@@ -119,11 +105,11 @@ class LSTMNetworkParametersCollection:
             second_dimension=hidden_layer_size,
             weight_initializer=weight_initializer
         )
-        self.b_f = _NetworkBiasParameter(name='b_f', size=hidden_layer_size)
-        self.b_i = _NetworkBiasParameter(name='b_i', size=hidden_layer_size)
-        self.b_o = _NetworkBiasParameter(name='b_o', size=hidden_layer_size)
-        self.b_c = _NetworkBiasParameter(name='b_c', size=hidden_layer_size)
-        self.b_y = _NetworkBiasParameter(name='b_y', size=vocabulary_size)
+        self.b_f = _RNNNetworkBiasParameter(name='b_f', size=hidden_layer_size)
+        self.b_i = _RNNNetworkBiasParameter(name='b_i', size=hidden_layer_size)
+        self.b_o = _RNNNetworkBiasParameter(name='b_o', size=hidden_layer_size)
+        self.b_c = _RNNNetworkBiasParameter(name='b_c', size=hidden_layer_size)
+        self.b_y = _RNNNetworkBiasParameter(name='b_y', size=vocabulary_size)
 
     def reset_gradients_to_zero(self):
         self.W_fh.reset_gradient_to_zero()
