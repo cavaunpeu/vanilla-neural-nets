@@ -17,9 +17,9 @@ class _NetworkWeightParameter:
 
 class _NetworkBiasParameter:
 
-    def __init__(self, name, size):
+    def __init__(self, name, first_dimension, bias_initializer):
         self.name = name
-        self.value = np.zeros(size)
+        self.value = bias_initializer.initialize(first_dimension=first_dimension)
         self.reset_gradient_to_zero()
 
     def reset_gradient_to_zero(self):

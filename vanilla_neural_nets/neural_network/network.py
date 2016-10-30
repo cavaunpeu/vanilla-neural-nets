@@ -40,13 +40,13 @@ class VanillaNeuralNetwork:
                 holdout_accuracy = self._validate_on_holdout_set()
                 print('Epoch: {} | Accuracy: {}'.format(epoch, np.round(holdout_accuracy, 5)))
 
-    def predict(self, X):
-        activation_matrix = X
-        for layer in self.parameters:
-            activation_function_class = self.output_layer_activation_function_class if layer.output_layer\
+    def predict(self, x):
+        activation_matrix = x
+        for layer in self.parameters.layers:
+            activation_function_class = self.output_layer_activation_function_class if layer.is_output_layer\
                 else self.activation_function_class
 
-            linear_combination = np.dot(activation_matrix, layer.weight_matrix.T) + layer.bias_vector
+            linear_combination = np.dot(activation_matrix, layer.weight_parameter.value.T) + layer.bias_parameter.value
             activation_matrix = activation_function_class.activation_function(linear_combination)
         return activation_matrix
 
