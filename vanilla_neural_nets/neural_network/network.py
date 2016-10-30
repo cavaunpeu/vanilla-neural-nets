@@ -23,7 +23,7 @@ class VanillaNeuralNetwork:
         self.training_batch_size = training_batch_size
         self.holdout_data = holdout_data
         self.random_number_generator = np.random.RandomState(random_state)
-        self.network_layers = NetworkLayersCollection(
+        self.parameters = NetworkLayersCollection(
             layer_sizes=layer_sizes,
             weight_initializer=weight_initializer,
             bias_initializer=bias_initializer
@@ -35,14 +35,14 @@ class VanillaNeuralNetwork:
                 random_number_generator=self.random_number_generator)
 
             for training_batch in training_batch_generator:
-                self.network_layers = self._update_network_layers_with_training_batch(training_batch)
+                self.parameters = self._update_network_layers_with_training_batch(training_batch)
             if self.holdout_data:
                 holdout_accuracy = self._validate_on_holdout_set()
                 print('Epoch: {} | Accuracy: {}'.format(epoch, np.round(holdout_accuracy, 5)))
 
     def predict(self, X):
         activation_matrix = X
-        for layer in self.network_layers:
+        for layer in self.parameters:
             activation_function_class = self.output_layer_activation_function_class if layer.output_layer\
                 else self.activation_function_class
 
@@ -53,7 +53,7 @@ class VanillaNeuralNetwork:
     def _update_network_layers_with_training_batch(self, training_batch):
         return self.optimization_algorithm_class(
             training_batch=training_batch,
-            network_layers=self.network_layers,
+            network_layers=self.parameters,
             loss_function_class=self.loss_function_class,
             activation_function_class=self.activation_function_class,
             output_layer_activation_function_class=self.output_layer_activation_function_class,
