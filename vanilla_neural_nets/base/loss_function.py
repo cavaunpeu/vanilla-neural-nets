@@ -18,5 +18,10 @@ class BaseLossFunction(metaclass=ABCMeta):
 
     @classmethod
     @abstractmethod
+    def total_loss(cls):
+        pass
+
+    @classmethod
+    @abstractmethod
     def derivative_of_loss_function(cls):
         pass

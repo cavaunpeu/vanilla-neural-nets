@@ -1,39 +1,64 @@
+from vanilla_neural_nets.base.parameter_object import _NetworkWeightParameter, _NetworkBiasParameter
+
 
 class _NetworkLayer:
 
-    def __init__(self, weight_matrix, bias_vector, output_layer):
-        self.weight_matrix = weight_matrix
-        self.bias_vector = bias_vector
-        self.output_layer = output_layer
+    def __init__(self, weight_parameter, bias_parameter, is_output_layer):
+        self.weight_parameter = weight_parameter
+        self.bias_parameter = bias_parameter
+        self.is_output_layer = is_output_layer
 
 
 class NetworkLayersCollection:
 
     def __init__(self, layer_sizes, weight_initializer, bias_initializer):
-        self._weight_matrices = weight_initializer.initialize(layer_sizes)
-        self._bias_vectors = bias_initializer.initialize(layer_sizes)
+        self._layer_sizes = layer_sizes
+        self.weight_parameters = self._initialize_weight_parameters(weight_initializer)
+        self.bias_parameters = self._initialize_bias_parameters(bias_initializer)
+
+    def reset_gradients_to_zero(self):
+        for parameter in self._parameters:
+            parameter.reset_gradient_to_zero()
+
+    def _initialize_weight_parameters(self, weight_initializer):
+        weight_parameters = []
+        for layer_index, (layer_size, next_layer_size) in enumerate( zip(self._layer_sizes[:-1], self._layer_sizes[1:]) ):
+            weight_parameters.append(
+                _NetworkWeightParameter(
+                    name='W_' + str(layer_index),
+                    first_dimension=next_layer_size,
+                    second_dimension=layer_size,
+                    weight_initializer=weight_initializer
+                )
+            )
+        return weight_parameters
+
+    def _initialize_bias_parameters(self, bias_initializer):
+        bias_parameters = []
+        for layer_index, layer_size in enumerate(self._layer_sizes[1:]):
+            bias_parameters.append(
+                _NetworkBiasParameter(
+                    name='b_' + str(layer_index),
+                    first_dimension=layer_size,
+                    bias_initializer=bias_initializer
+                )
+            )
+        return bias_parameters
 
     @property
-    def bias_vectors(self):
-        return self._bias_vectors
+    def layers(self):
+        for layer_index, (weight_parameter, bias_parameter) in enumerate(zip(self.weight_parameters, self.bias_parameters)):
+            is_output_layer = layer_index + 1 == len(self.weight_parameters)
+            yield _NetworkLayer(
+                weight_parameter=weight_parameter,
+                bias_parameter=bias_parameter,
+                is_output_layer=is_output_layer
+            )
 
     @property
-    def weight_matrices(self):
-        return self._weight_matrices
-
-    @bias_vectors.setter
-    def bias_vectors(self, updated_bias_vectors):
-        self._bias_vectors = updated_bias_vectors
-
-    @weight_matrices.setter
-    def weight_matrices(self, updated_weight_matrices):
-        self._weight_matrices = updated_weight_matrices
+    def _parameters(self):
+        return self.weight_parameters + self.bias_parameters
 
     def __iter__(self):
-        for layer_index, (weight_matrix, bias_vector) in enumerate(zip(self.weight_matrices, self.bias_vectors)):
-            is_output_layer = layer_index + 1 == len(self.weight_matrices)
-            yield _NetworkLayer(
-                weight_matrix=weight_matrix,
-                bias_vector=bias_vector,
-                output_layer=is_output_layer
-            )
+        for parameter in self._parameters:
+            yield parameter

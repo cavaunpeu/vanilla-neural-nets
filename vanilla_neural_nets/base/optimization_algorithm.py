@@ -16,7 +16,7 @@ class BaseRNNGradientDescent(metaclass=ABCMeta):
 
     def run(self):
         self._compute_gradients()
-        self._update_weights()
+        self._update_parameters()
         return self.parameters
 
     def _compute_gradients(self):
@@ -28,5 +28,5 @@ class BaseRNNGradientDescent(metaclass=ABCMeta):
         ).compute_gradients(x=self.x, y=self.y)
 
     @abstractmethod
-    def _update_weights(self):
+    def _update_parameters(self):
         pass

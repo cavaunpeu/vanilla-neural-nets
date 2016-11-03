@@ -7,13 +7,13 @@ from vanilla_neural_nets.recurrent_neural_network.network import VanillaRecurren
 from vanilla_neural_nets.recurrent_neural_network.optimization_algorithm import RNNGradientDescent, LSTMGradientDescent
 from vanilla_neural_nets.recurrent_neural_network.backpropagate_through_time import RNNBackPropagateThroughTime, LSTMBackpropagateThroughTime
 from vanilla_neural_nets.recurrent_neural_network.parameter_initialization import OneOverRootNWeightInitializer
-from tests.helpers.gradient_check import RNNGradientChecker
+from tests.helpers.gradient_check import GradientChecker
 
 
 class TestVanillaRecurrentNeuralNetwork(unittest.TestCase):
 
-    X_TRAIN = [0, 1, 2, 3]
-    Y_TRAIN = [1, 2, 3, 4]
+    X_TRAIN = [[0, 1, 2, 3]]
+    Y_TRAIN = [[1, 2, 3, 4]]
     VOCABULARY_SIZE = 10
 
     HIDDEN_LAYER_SIZE = 3
@@ -72,11 +72,11 @@ class TestVanillaRecurrentNeuralNetwork(unittest.TestCase):
             n_epochs=self.N_EPOCHS,
             random_state=self.RANDOM_STATE
         )
-        rnn_gradient_checker = RNNGradientChecker(network=network, x=self.X_TRAIN, y=self.Y_TRAIN)
+        gradient_checker = GradientChecker(network=network, X=self.X_TRAIN, y=self.Y_TRAIN)
 
-        rnn_gradient_checker.run()
+        gradient_checker.run()
 
-        self.assertTrue(rnn_gradient_checker.passed)
+        self.assertTrue(gradient_checker.passed)
 
     def test_network_correctly_updates_W_xh_value_after_gradient_descent_step(self):
         network = VanillaRecurrentNeuralNetwork(
@@ -91,7 +91,7 @@ class TestVanillaRecurrentNeuralNetwork(unittest.TestCase):
             random_state=self.RANDOM_STATE
         )
 
-        network.fit(X=[self.X_TRAIN], y=[self.Y_TRAIN])
+        network.fit(X=self.X_TRAIN, y=self.Y_TRAIN)
 
         assert_array_almost_equal(network.parameters.W_xh.value,
             self.EXPECTED_W_XH_VALUE_AFTER_GRADIENT_DESCENT_STEP, decimal=8)
@@ -109,7 +109,7 @@ class TestVanillaRecurrentNeuralNetwork(unittest.TestCase):
             random_state=self.RANDOM_STATE
         )
 
-        network.fit(X=[self.X_TRAIN], y=[self.Y_TRAIN])
+        network.fit(X=self.X_TRAIN, y=self.Y_TRAIN)
 
         assert_array_almost_equal(network.parameters.W_hh.value,
             self.EXPECTED_W_HH_VALUE_AFTER_GRADIENT_DESCENT_STEP, decimal=8)
@@ -127,7 +127,7 @@ class TestVanillaRecurrentNeuralNetwork(unittest.TestCase):
             random_state=self.RANDOM_STATE
         )
 
-        network.fit(X=[self.X_TRAIN], y=[self.Y_TRAIN])
+        network.fit(X=self.X_TRAIN, y=self.Y_TRAIN)
 
         assert_array_almost_equal(network.parameters.W_hy.value,
             self.EXPECTED_W_HY_VALUE_AFTER_GRADIENT_DESCENT_STEP, decimal=8)
@@ -145,7 +145,7 @@ class TestVanillaRecurrentNeuralNetwork(unittest.TestCase):
             random_state=self.RANDOM_STATE
         )
 
-        network.fit(X=[self.X_TRAIN], y=[self.Y_TRAIN])
+        network.fit(X=self.X_TRAIN, y=self.Y_TRAIN)
         predictions = network.predict(self.X_TEST)
 
         assert_array_almost_equal(predictions, self.EXPECTED_PREDICTIONS, decimal=8)
@@ -153,8 +153,8 @@ class TestVanillaRecurrentNeuralNetwork(unittest.TestCase):
 
 class TestLSTM(unittest.TestCase):
 
-    X_TRAIN = [0, 1, 2, 3]
-    Y_TRAIN = [1, 2, 3, 4]
+    X_TRAIN = [[0, 1, 2, 3]]
+    Y_TRAIN = [[1, 2, 3, 4]]
     VOCABULARY_SIZE = 10
     HIDDEN_LAYER_SIZE = 3
     BACKPROP_THROUGH_TIME_STEPS = SOME_LARGE_NUMBER = 1000
@@ -174,8 +174,8 @@ class TestLSTM(unittest.TestCase):
             n_epochs=self.N_EPOCHS,
             random_state=self.RANDOM_STATE
         )
-        rnn_gradient_checker = RNNGradientChecker(network=network, x=self.X_TRAIN, y=self.Y_TRAIN)
+        gradient_checker = GradientChecker(network=network, X=self.X_TRAIN, y=self.Y_TRAIN)
 
-        rnn_gradient_checker.run()
+        gradient_checker.run()
 
-        self.assertTrue(rnn_gradient_checker.passed)
+        self.assertTrue(gradient_checker.passed)

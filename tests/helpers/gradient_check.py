@@ -1,24 +1,21 @@
 from unittest.mock import patch
-import sys
 
 import numpy as np
 
-from vanilla_neural_nets.base.optimization_algorithm import BaseRNNGradientDescent
 
+class GradientChecker:
 
-class RNNGradientChecker:
-
-    def __init__(self, network, x, y, epsilon=.001, error_threshold=.01):
+    def __init__(self, network, X, y, epsilon=.001, error_threshold=.01):
         self.network = network
-        self.x = x
+        self.X = X
         self.y = y
         self.epsilon = epsilon
         self.error_threshold = error_threshold
         self._passed = False
 
     def run(self):
-        with patch.object(self.network.optimization_algorithm_class, attribute='_update_weights'):
-            self.network.fit(X=[self.x], y=[self.y])
+        with patch.object(self.network.optimization_algorithm_class, attribute='_update_parameters'):
+            self.network.fit(X=self.X, y=self.y)
             for parameter in self.network.parameters:
                 if not self._passes_gradient_check(parameter=parameter):
                     return
@@ -71,10 +68,20 @@ class RNNGradientChecker:
 
     def _compute_total_loss_given_parameter_value(self, parameter, value):
         with patch.object(parameter, attribute='value', new=value):
-            y_predicted = self.network.predict(x=self.x)
-            return self.network.loss_function_class.total_loss(y_true=self.y, y_predicted=y_predicted)
+            X, y = self._normalize_X_and_y_for_prediction()
+            y_predicted = self.network.predict(X)
+            return self.network.loss_function_class.total_loss(y_true=y, y_predicted=y_predicted)
 
     def _compute_relative_error(self, numerical_gradient, analytical_gradient):
+        numerical_gradient = max(numerical_gradient, 1e-10)
+        analytical_gradient = max(analytical_gradient, 1e-10)
+
         if numerical_gradient == analytical_gradient:
             return 0
         return np.abs( analytical_gradient - numerical_gradient ) / ( np.abs(analytical_gradient) + np.abs(numerical_gradient) )
+
+    def _normalize_X_and_y_for_prediction(self):
+        """The RNN `predict` expects a single list. The neural net `predict` expects
+        a matrix. This is not ideal. We leave it for now.
+        """
+        return np.squeeze(self.X), np.squeeze(self.y)
