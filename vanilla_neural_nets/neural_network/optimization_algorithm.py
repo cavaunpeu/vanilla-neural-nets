@@ -60,11 +60,11 @@ class GradientDescent:
 
     def _compute_weight_parameter_gradients(self):
         for layer, (activation_matrix, delta_matrix) in zip(self.parameters.layers, zip(self.activation_matrices[:-1], self.delta_matrices)):
-            layer.weight_parameter.gradient = np.dot(delta_matrix.T, activation_matrix)
+            layer.weight_parameter.gradient += np.dot(delta_matrix.T, activation_matrix)
 
     def _compute_bias_parameter_gradients(self):
         for layer, delta_matrix in zip(self.parameters.layers, self.delta_matrices):
-            layer.bias_parameter.gradient = delta_matrix.sum(axis=0)
+            layer.bias_parameter.gradient += delta_matrix.sum(axis=0)
 
     def _compute_updated_weight_and_bias_parameters(self):
         for layer in self.parameters.layers:

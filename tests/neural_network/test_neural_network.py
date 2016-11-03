@@ -3,14 +3,11 @@ import unittest
 import numpy as np
 from numpy.testing import assert_array_almost_equal
 
-from tests.fixtures.vanilla_neural_network_mean_squared_loss_expected_result import MEAN_SQUARED_LOSS_EXPECTED_RESULT
-from tests.fixtures.vanilla_neural_network_cross_entropy_loss_expected_result import CROSS_ENTROPY_LOSS_EXPECTED_RESULT
 from tests.helpers.gradient_check import GradientChecker
-
 from vanilla_neural_nets.neural_network.network import VanillaNeuralNetwork
 from vanilla_neural_nets.neural_network.training_batch_generator import MiniBatchGenerator
 from vanilla_neural_nets.neural_network.optimization_algorithm import GradientDescent
-from vanilla_neural_nets.neural_network.loss_function import MeanSquaredError
+from vanilla_neural_nets.neural_network.loss_function import MeanSquaredError, BinaryCrossEntropyLoss
 from vanilla_neural_nets.neural_network.activation_function import SigmoidActivationFunction
 from vanilla_neural_nets.neural_network.parameter_initialization import GaussianWeightInitializer, GaussianBiasInitializer
 
@@ -29,7 +26,10 @@ class TestVanillaNeuralNetwork(unittest.TestCase):
 
     TRAINING_BATCH_SIZE = len(X_TRAIN)
 
-    def test_network_passes_gradient_check(self):
+    MEAN_SQUARED_LOSS_EXPECTED_RESULT = np.array([[ 0.072563377, 0.4071061], [0.072517576, 0.407073701]])
+    CROSS_ENTROPY_LOSS_EXPECTED_RESULT = np.array([[ 0.233455013, 0.477370927], [0.233337665, 0.477343897]])
+
+    def test_network_with_mean_squared_error_loss_passes_gradient_check(self):
         network = VanillaNeuralNetwork(
             layer_sizes=self.LAYER_SIZES,
             training_batch_generator_class=MiniBatchGenerator,
@@ -55,6 +55,34 @@ class TestVanillaNeuralNetwork(unittest.TestCase):
 
         self.assertTrue(gradient_checker.passed)
 
+
+    def test_network_with_binary_cross_entropy_loss_passes_gradient_check(self):
+        network = VanillaNeuralNetwork(
+            layer_sizes=self.LAYER_SIZES,
+            training_batch_generator_class=MiniBatchGenerator,
+            loss_function_class=BinaryCrossEntropyLoss,
+            activation_function_class=SigmoidActivationFunction,
+            optimization_algorithm_class=GradientDescent,
+            learning_rate=self.LEARNING_RATE,
+            n_epochs=self.N_EPOCHS,
+            training_batch_size=self.TRAINING_BATCH_SIZE,
+            random_state=self.RANDOM_STATE,
+            weight_initializer=GaussianWeightInitializer(
+                self.GAUSSIAN_INITIALIZATER_STANDARD_DEVIATION,
+                random_state=self.RANDOM_STATE
+            ),
+            bias_initializer=GaussianBiasInitializer(
+                self.GAUSSIAN_INITIALIZATER_STANDARD_DEVIATION,
+                random_state=self.RANDOM_STATE
+            )
+        )
+        gradient_checker = GradientChecker(network=network, X=self.X_TRAIN, y=self.Y_TRAIN)
+
+        gradient_checker.run()
+
+        self.assertTrue(gradient_checker.passed)
+
+
     def test_network_with_mean_squared_loss_gives_correct_output(self):
         network = VanillaNeuralNetwork(
             layer_sizes=self.LAYER_SIZES,
@@ -79,14 +107,14 @@ class TestVanillaNeuralNetwork(unittest.TestCase):
         network.fit(X=self.X_TRAIN, y=self.Y_TRAIN)
 
         actual_results = network.predict(x=self.X_TEST)
-        assert_array_almost_equal(actual_results, MEAN_SQUARED_LOSS_EXPECTED_RESULT, decimal=9)
+        assert_array_almost_equal(actual_results, self.MEAN_SQUARED_LOSS_EXPECTED_RESULT, decimal=9)
 
 
-    def test_network_with_cross_entropy_loss_gives_correct_output(self):
+    def test_network_with_binary_cross_entropy_loss_gives_correct_output(self):
         network = VanillaNeuralNetwork(
             layer_sizes=self.LAYER_SIZES,
             training_batch_generator_class=MiniBatchGenerator,
-            loss_function_class=MeanSquaredError,
+            loss_function_class=BinaryCrossEntropyLoss,
             activation_function_class=SigmoidActivationFunction,
             optimization_algorithm_class=GradientDescent,
             learning_rate=self.LEARNING_RATE,
@@ -106,4 +134,4 @@ class TestVanillaNeuralNetwork(unittest.TestCase):
         network.fit(X=self.X_TRAIN, y=self.Y_TRAIN)
 
         actual_results = network.predict(x=self.X_TEST)
-        assert_array_almost_equal(actual_results, CROSS_ENTROPY_LOSS_EXPECTED_RESULT, decimal=9)
+        assert_array_almost_equal(actual_results, self.CROSS_ENTROPY_LOSS_EXPECTED_RESULT, decimal=9)
