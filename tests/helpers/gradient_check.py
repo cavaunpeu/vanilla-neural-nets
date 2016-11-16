@@ -5,7 +5,7 @@ import numpy as np
 
 class GradientChecker:
 
-    def __init__(self, network, X, y, epsilon=.001, error_threshold=.01):
+    def __init__(self, network, X, y, epsilon=.0001, error_threshold=.01):
         self.network = network
         self.X = X
         self.y = y
@@ -82,3 +82,11 @@ class GradientChecker:
         a matrix. This is not ideal. We leave it for now.
         """
         return np.squeeze(self.X), np.squeeze(self.y)
+
+
+class SparsityEnforcingGradientChecker(GradientChecker):
+
+    def _compute_total_loss_given_parameter_value(self, parameter, value):
+        with patch.object(parameter, attribute='value', new=value):
+            y_predicted, hidden_layer_sparsity_coefficients = self.network.predict(self.X)
+            return self.network.loss_function_class.total_loss(y_true=self.y, y_predicted=y_predicted, rho=self.network.rho, beta=self.network.beta, vector_of_rho_hats=hidden_layer_sparsity_coefficients)
