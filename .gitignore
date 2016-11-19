@@ -3,3 +3,4 @@ mldata
 **/__pycache__/*
 notebooks
 .DS_Store
+to_do_list.txt
