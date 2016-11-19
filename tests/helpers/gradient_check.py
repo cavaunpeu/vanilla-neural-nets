@@ -73,9 +73,6 @@ class GradientChecker:
             return self.network.loss_function_class.total_loss(y_true=y, y_predicted=y_predicted)
 
     def _compute_relative_error(self, numerical_gradient, analytical_gradient):
-        numerical_gradient = max(numerical_gradient, 1e-10)
-        analytical_gradient = max(analytical_gradient, 1e-10)
-
         if numerical_gradient == analytical_gradient:
             return 0
         return np.abs( analytical_gradient - numerical_gradient ) / ( np.abs(analytical_gradient) + np.abs(numerical_gradient) )

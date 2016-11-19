@@ -1,0 +1,10 @@
+## small things to add
+- adagrad (easy)
+- clip exploding gradients (easy)
+- gradient check for vanilla neural net (medium)
+
+## models to add
+autoencoders
+    - variational autoencoder
+    - vanilla autoencoder
+    - rbm
