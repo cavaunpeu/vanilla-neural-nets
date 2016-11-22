@@ -12,7 +12,7 @@ class _NetworkLayer:
 class NetworkLayersCollection:
 
     def __init__(self, layer_sizes, weight_initializer, bias_initializer):
-        self._layer_sizes = layer_sizes
+        self.layer_sizes = layer_sizes
         self.weight_parameters = self._initialize_weight_parameters(weight_initializer)
         self.bias_parameters = self._initialize_bias_parameters(bias_initializer)
 
@@ -22,7 +22,7 @@ class NetworkLayersCollection:
 
     def _initialize_weight_parameters(self, weight_initializer):
         weight_parameters = []
-        for layer_index, (layer_size, next_layer_size) in enumerate( zip(self._layer_sizes[:-1], self._layer_sizes[1:]) ):
+        for layer_index, (layer_size, next_layer_size) in enumerate( zip(self.layer_sizes[:-1], self.layer_sizes[1:]) ):
             weight_parameters.append(
                 _NetworkWeightParameter(
                     name='W_' + str(layer_index),
@@ -35,7 +35,7 @@ class NetworkLayersCollection:
 
     def _initialize_bias_parameters(self, bias_initializer):
         bias_parameters = []
-        for layer_index, layer_size in enumerate(self._layer_sizes[1:]):
+        for layer_index, layer_size in enumerate(self.layer_sizes[1:]):
             bias_parameters.append(
                 _NetworkBiasParameter(
                     name='b_' + str(layer_index),
