@@ -48,6 +48,10 @@ class VanillaSparseAutoencoder(VanillaNeuralNetwork):
         hidden_layer_activations = activation_matrices[1]
         return activation_matrices[-1], hidden_layer_activations.mean(axis=0).clip(self.rho_hat_clip_epsilon, 1 - self.rho_hat_clip_epsilon)
 
+    def generate(self, hidden_layer_activations):
+        linear_combination = np.dot(hidden_layer_activations, self.parameters.weight_parameters[-1].value.T) + self.parameters.bias_parameters[-1].value
+        return self.output_layer_activation_function_class.activation_function(linear_combination)
+
     def _update_network_layers_with_training_batch(self, training_batch):
         return self.optimization_algorithm_class(
             training_batch=training_batch,
