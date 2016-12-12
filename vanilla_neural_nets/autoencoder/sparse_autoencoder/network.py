@@ -11,7 +11,8 @@ class VanillaSparseAutoencoder(VanillaNeuralNetwork):
     def __init__(self, layer_sizes, training_batch_generator_class, loss_function_class,
             activation_function_class, optimization_algorithm_class, learning_rate, n_epochs,
             training_batch_size, weight_initializer, bias_initializer, sparsity_constraint_class,
-            rho, beta, output_layer_activation_function_class=None, holdout_data=None, random_state=123):
+            rho, beta, output_layer_activation_function_class=None, holdout_data=None, random_state=123,
+            rho_hat_clip_epsilon=1e-15):
         if len(layer_sizes) > 3:
             sys.exit('Autoencoder should have only one hidden layer')
 
@@ -33,6 +34,7 @@ class VanillaSparseAutoencoder(VanillaNeuralNetwork):
         self.sparsity_constraint_class = sparsity_constraint_class
         self.rho = rho
         self.beta = beta
+        self.rho_hat_clip_epsilon = rho_hat_clip_epsilon
 
     def predict(self, x):
         activation_matrices = [x]
@@ -44,7 +46,7 @@ class VanillaSparseAutoencoder(VanillaNeuralNetwork):
             activation_matrices.append(activation_function_class.activation_function(linear_combination))
 
         hidden_layer_activations = activation_matrices[1]
-        return activation_matrices[-1], hidden_layer_activations.mean(axis=0)
+        return activation_matrices[-1], hidden_layer_activations.mean(axis=0).clip(self.rho_hat_clip_epsilon, 1 - self.rho_hat_clip_epsilon)
 
     def _update_network_layers_with_training_batch(self, training_batch):
         return self.optimization_algorithm_class(
@@ -56,5 +58,6 @@ class VanillaSparseAutoencoder(VanillaNeuralNetwork):
             learning_rate=self.learning_rate,
             sparsity_constraint_class=self.sparsity_constraint_class,
             rho=self.rho,
-            beta=self.beta
+            beta=self.beta,
+            rho_hat_clip_epsilon=self.rho_hat_clip_epsilon
         ).run()
